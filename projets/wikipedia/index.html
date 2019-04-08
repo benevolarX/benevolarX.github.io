@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="UTF-8">
+		<title>Wikipedia API</title>	
+	</head>
+
+	<body>
+		<header class="menu">
+			<form class="recherche">
+				<label for="recherche_wikipedia">
+					<input type="text" id="recherche_wikipedia" name="recherche_wikipedia" placeholder="rechercher sur wikipedia" />
+				</label>
+				<br/>
+				<label for="limit_result">
+					nombre de resultat max : 
+					<input type="number" id="limit_result" name="limit_result" min="5" max="100" value="10" step="5" />
+				</label>
+			</form>
+		</header>
+		<section class="resultats">
+			<header class="pagination"></header>
+			<article id="resultats"></article>
+			<footer class="pagination"></footer>
+		</section>
+		<script>
+			window.onload = () => 
+			{
+				try {
+					async function getWiki(mot, max_res) {
+						const generateUrl = function(search = "paris", limit = 5) {
+							const url = "https://fr.wikipedia.org/w/api.php";
+							const action = "opensearch";
+							const origin = "*";
+							const format = "json";
+							return `${url}?origin=${origin}&action=${action}&search=${search}&format=${format}&limit=${limit}`;
+						}
+						try {
+							let res = await fetch(generateUrl(mot, max_res), { method: 'GET' });	
+							if (res.ok !== false) {
+								let d = await res.json();
+								let resultats = [];
+								for (let i = 0, max = d[1].length; i < max; i++) {
+									resultats.push({
+										titre: (d[1][i]),
+										description: (d[2][i]),
+										lien: (d[3][i])
+									});
+								}
+								return resultats;
+							}
+						}
+						catch (e) {
+							console.error(e);
+						}
+						return null;
+					};
+					
+					function clearChild(elem) {
+						while (elem.firstElementChild) {
+							elem.removeChild(elem.firstElementChild);
+						}
+					}
+					
+					let input = document.getElementById('recherche_wikipedia');
+					let limit = document.getElementById('limit_result');
+					let resultats = document.getElementById('resultats');
+					
+					input.onkeyup = input.onkeydown = (e) => {
+						let mot = e.target.value;
+						if (mot.length > 2) {
+							getWiki(mot, limit.value).then(tab => {
+								clearChild(resultats);
+								for (let i = 0, max = tab.length; i < max; i++) 
+								{
+									let article = document.createElement('div');
+									let titre = document.createElement('h4');
+									let description = document.createElement('p');
+									description.innerHTML = tab[i].description;
+									let url = document.createElement('a');
+									url.href = tab[i].lien;
+									url.innerHTML = tab[i].titre;
+									titre.appendChild(url);
+									article.appendChild(titre);
+									article.appendChild(description);
+									resultats.appendChild(article);
+								}
+							});
+						}
+					}
+				}
+				catch(err) {
+					console.error(err);
+				}
+			};
+		</script>
+	</body>
+</html>
