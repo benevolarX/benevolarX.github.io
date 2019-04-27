@@ -13,7 +13,7 @@ async function get_dialog() {
 	return res.json();
 }
 let repliques = get_dialog();
-console.log(repliques.dialog);
+repliques.then(console.log);
 
 function drawMultipleLine(ctx, txt, x, y, color, font, font_size, max_w, max_x = 800)
 {
