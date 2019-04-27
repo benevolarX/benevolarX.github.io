@@ -20,6 +20,8 @@ const JOKER = 4;
 const COULEUR = ["rouge", "bleu", "vert", "jaune", "joker", "dos"];
 const VALEUR = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "plus_2", "passe_tour", "change_sens", "plus_4", "change_couleur", "dos"];
 
+const ASSET_DOS = "../assets/cartes/dos.png";
+
 function shuffle(a) 
 {
     for (let i = a.length - 1; i > 0; i--) 
@@ -64,6 +66,16 @@ class Carte
 		return `${VALEUR[this.valeur]} ${COULEUR[this.couleur]} ${this.qui} \n`;
 	}
 	
+	sort(c) {
+		if (c.couleur === this.couleur) {
+			if (c.valeur === this.valeur) {
+				return 0;
+			}
+			return this.valeur < c.valeur ? 1 : -1;
+		}
+		return this.couleur < c.couleur ? 1 : -1;
+	}
+	
 }
 
 class UnoGame 
@@ -76,6 +88,9 @@ class UnoGame
 
 	init() 
 	{
+		this.mouse_x = 0;
+		this.mouse_y = 0;
+		this.a_clic = false;
 		this.nb_joueur = 2;
 		this.tour = 0;
 		this.pas = 1;
@@ -100,6 +115,7 @@ class UnoGame
 			c.qui = DEFAUSSE;
 			c = this.piocher(VISIBLE);
 		}
+		this.carte_visible = Object.assign(new Carte(0, 0, 0), c);
 
 		// cartes des joueurs
 		for (let j = 0; j < 7; j++) {
@@ -112,13 +128,24 @@ class UnoGame
 	piocher(qui, ou = PIOCHE) 
 	{
 		shuffle(this.cartes);
-		let c = this.cartes.find(c => c.qui === ou);
-		if (c === null) 
+		let c = this.cartes.find(c => c.qui === ou) || null;
+		if (c !== null) 
 		{
-			return null;
+			c.qui = qui;
+			return c;
 		}
-		c.qui = qui;
-		return c;
+		return null;
+	}
+	
+	clic(e) {
+		console.log(e);
+		this.mouse_x = e.clientX || 0;
+		this.mouse_y = e.clientY || 0;
+		this.a_clic = true;
+	}
+	
+	test_clic(x, y, w, h) {
+		return this.mouse_x >= x && this.mouse_x <= x + w && this.mouse_y >= y && this.mouse_y <= y + h;
 	}
 	
 	update(canvas) 
@@ -133,25 +160,51 @@ class UnoGame
 		let ratio = 1.2;
 		let wc = 100 * ratio;
 		let hc = 130 * ratio;
-		let carte_visible = Object.assign(new Carte(0, 0, 0), this.cartes.find(c => c.qui = VISIBLE));
-		if (carte_visible !== null) {
-			let img = new Image();
-			img.src = carte_visible.Url;
-			ctx.drawImage(img, w/2 - wc/2, h/2 - hc/2, wc, hc);
+		let centre_x = w/2 - wc/2;
+		let centre_y = h/2 - hc/2;
+		let img = new Image();
+		
+		// carte visible
+		if (this.carte_visible !== null) {
+			img = new Image();
+			img.src = this.carte_visible.Url;
+			ctx.drawImage(img, centre_x - wc, centre_y, wc, hc);
+			// pioche 
+			img = new Image();
+			img.src = ASSET_DOS;
+			ctx.drawImage(img, centre_x + wc, centre_y, wc, hc);
+			if (this.a_clic && this.test_clic(centre_x + wc, centre_y, wc, hc)) {
+				console.log("pioche !");
+				console.log(this.piocher(0).toString());
+				this.a_clic = false;
+			}
 		}
 		else {
 			ctx.fillStyle = "#900";
-			ctx.fillRect(w/2 - wc/2, h/2 - hc/2, wc, hc);
+			ctx.fillRect(centre_x - wc, centre_y, wc, hc);
 		}
 
-		let moi = this.cartes.filter(c => c.qui === 0);
+		// mes cartes
+		let moi = this.cartes.filter(c => c.qui === 0).sort((a, b) => a.sort(b));
 		let decalage = (w - wc * moi.length)/(moi.length - 1);
 		for (let i = 0; i < moi.length; i++) {
 			let c = Object.assign(new Carte(0, 0, 0), moi[i]);
-			let img = new Image();
+			img = new Image();
 			img.src = c.Url;
 			ctx.drawImage(img, i * (wc + decalage), h - hc, wc, hc);
 		}
+		
+		// cartes adversaire
+		let num_adv = this.tour % this.nb_joueur;
+		let adv = this.cartes.filter(c => c.qui === 1);
+		decalage = (w - wc * adv.length)/(adv.length - 1);
+		for (let i = 0; i < adv.length; i++) {
+			let img = new Image();
+			img.src = ASSET_DOS;
+			ctx.drawImage(img, i * (wc + decalage), 0, wc, hc);
+		}
+		
+		
 	}
 }
 
@@ -205,6 +258,8 @@ class Game {
 	
 	start()
 	{
+		const self = this;
+		this.canvas.onclick = e => self.game.clic(e);
 		this.update();
 	}
 	

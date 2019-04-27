@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="UTF-8">
+		<title>Ludum DARE 44 - Your life is currency</title>	
+	</head>
+
+	<body>
+		<section id="game"></section>
+		<script defer src="./engine.js"></script>
+		<script defer src="./organes.js"></script>
+		<script defer src="./ludum_dare_44.js"></script>
+	</body>
+	<!--
+		brouillon de jeu 
+		
+		idée de base : acheter des objets avec ses organes (doigts, oeil, pieds, ...)
+		
+		type de jeu : énigme / point & click
+		
+		développement : on incarne une personne en train de rêver, 
+		ce monde du rêve où tout est possible présente un monde où l'argent est 
+		remplacé par les parties du corps. Bref, ça coûte un bras !
+		Chaque partie du corps a son utilité et devra être dépensé avec précaution.
+		Vendre un oeil (gauche ou droit) cache 50% de l'écran donc 50% du jeu 
+		n'est plus visible si jamais on utilise un oeil.
+		Vendre un doigt ne pose pas de soucis mais le pouce est précieux pour 
+		attraper des objets.
+		Vendre un bras entier empêche d'applaudir. 
+		Vendre une jambe empêche de courrir.
+		Vendre un organe vital (cerveau, coeur, ...) c'est GAME OVER direct.
+		Un personnage méchant sera présent tout au long du jeu et proposera 
+		ce type de troc. Il faudra refuser ses propositions mais essayer de 
+		lui sous-tirer des informations pour résoudre les énigmes. 
+		Pour ne pas bloquer le joueur, il sera possible de reset la partie 
+		en allant à l'hospital; L'infirmière proposera alors un reboot 
+		complet en échange de tout vos biens de valeur. (objets acheté dans le jeu)
+		Le jeu est donc un die & retry.
+		
+		liste des organes disponibles : 
+		doigts : 0 = ne peut pas attraper d'objet 
+		bras : 0 = ne peut pas applaudir
+		oeil : cache 50% du jeu si vendu
+		jambe : acheter 4 jambes pour sauter très haut
+		coeur / cerveau : vital, ne pas vendre 
+		2 coeur = empêche de mourir d'un choc électrique mais gâche 1 coeur 
+		
+		niveaux : 
+		
+			hospital reboot : 
+				infirmière restaure les parties du corps 
+				
+			magazin : 
+				vendeur propose 
+					une échelle au prix d'un bras (il faut 2 bras pour monter l'échelle)
+					une corde au prix d'une jambe 
+					une clé au prix d'un doigt 
+		
+	-->
+</html>
