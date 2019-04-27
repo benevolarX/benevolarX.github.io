@@ -10,7 +10,7 @@ const LANG_URL = `${GIT}/lang/${FR}.json`;
 
 async function get_dialog() {
 	let res = await fetch(LANG_URL, { method: 'GET' } ).then(r => { 
-		console.log(r); 
+		console.log(r.json()); 
 		return r; 
 	});
 	if (res.ok !== false)
