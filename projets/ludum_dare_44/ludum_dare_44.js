@@ -116,6 +116,7 @@ class LudumDareGame
 
 	clic(e)
 	{
+		console.log("clic");
 		return;
 	}
 }
