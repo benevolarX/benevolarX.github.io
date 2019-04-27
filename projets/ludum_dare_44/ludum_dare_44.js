@@ -9,14 +9,11 @@ const FR = "fr";
 const LANG_URL = `${GIT}/lang/${FR}.json`;
 
 async function get_dialog() {
-	let res = await fetch(LANG_URL, { method: 'GET' } )
-	.then(r => { 
-		return r; 
-	});
+	let res = await fetch(LANG_URL, { method: 'GET' } );
 	return res.body.json();
 }
 
-console.log(get_dialog());
+console.log(await get_dialog());
 
 function drawMultipleLine(ctx, txt, x, y, color, font, font_size, max_w, max_x = 800)
 {
