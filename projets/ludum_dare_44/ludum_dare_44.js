@@ -12,8 +12,14 @@ async function get_dialog() {
 	let res = await fetch(LANG_URL, { method: 'GET' } );
 	return res.json();
 }
-let repliques = await Promise.resolve(get_dialog().then(d => { console.log(d.dialog); return d.dialog; }));
-console.log(repliques);
+let texte_hospital = "hello";
+Promise.resolve(get_dialog()
+.then(d => { 
+	console.log(d.dialog);
+	texte_hospital = d.dialog.long;
+	return d.dialog;
+}));
+
 
 function drawMultipleLine(ctx, txt, x, y, color, font, font_size, max_w, max_x = 800)
 {
@@ -101,7 +107,7 @@ class LudumDareGame
 		this.imgs.set(HOSPITAL, hospital);
 
 		this.rect = Rectangle.buildDialog(40, WIDTH, HEIGHT, "rgb(20, 75, 16)", 20);
-		this.dialogue = new Dialogue("hello");
+		this.dialogue = new Dialogue(texte_hospital);
 	}
 	
 	update(canvas)
@@ -111,6 +117,7 @@ class LudumDareGame
 		ctx.fillStyle = "rgb(20, 100, 100)";
 		ctx.fillRect(0, 0, WIDTH, HEIGHT);
 		ctx.drawImage(this.imgs.get(HOSPITAL), 0, 0);
+		this.dialogue.texte = texte_hospital;
 		this.dialogue.draw(ctx, this.rect);
 	}
 
