@@ -35,7 +35,7 @@ function drawMultipleLine(ctx, txt, x, y, color, font, font_size, max_w, max_x =
 		let lines = [];
 		let line = "";
 		let i = 0;
-		for (i = 0; i < mots.length - 1; i++)
+		for (i = 0; i < mots.length; i++)
 		{
 			cpt += mots[i].length * char_size;
 			if (cpt > max_w) 
@@ -48,8 +48,8 @@ function drawMultipleLine(ctx, txt, x, y, color, font, font_size, max_w, max_x =
 				line += `${mots[i]} `;
 			}
 		}
-		lines.push(mots[i]);
-		for (i = 0; i < lines.length - 1; i++)
+		lines.push(mots[i - 1]);
+		for (i = 0; i < lines.length; i++)
 		{
 			if (i * font_size > max_x) {
 				ctx.restore();
