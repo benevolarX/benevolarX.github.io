@@ -12,7 +12,8 @@ async function get_dialog() {
 	let res = await fetch(LANG_URL, { method: 'GET' } );
 	return res.json();
 }
-let repliques = Promise.resolve(get_dialog().then(d => { console.log(d); return d.dialog; }));
+let repliques = Promise.resolve(get_dialog().then(d => { console.log(d.dialog); return d.dialog; }));
+console.log(repliques);
 
 function drawMultipleLine(ctx, txt, x, y, color, font, font_size, max_w, max_x = 800)
 {
