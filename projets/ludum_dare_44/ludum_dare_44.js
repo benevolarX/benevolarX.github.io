@@ -15,7 +15,7 @@ async function get_dialog() {
 let texte_hospital = "hello";
 Promise.resolve(get_dialog()
 .then(d => { 
-	console.log(d.dialog);
+	console.log(d.dialog.long);
 	texte_hospital = d.dialog.long;
 	return d.dialog;
 }));
