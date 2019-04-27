@@ -48,7 +48,7 @@ function drawMultipleLine(ctx, txt, x, y, color, font, font_size, max_w, max_x =
 				line += `${mots[i]} `;
 			}
 		}
-		lines.push(mots[i]);
+		lines.push(line);
 		for (i = 0; i < lines.length; i++)
 		{
 			if (i * font_size > max_x) {
