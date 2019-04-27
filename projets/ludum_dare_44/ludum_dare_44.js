@@ -9,17 +9,11 @@ const FR = "fr";
 const LANG_URL = `${GIT}/lang/${FR}.json`;
 
 async function get_dialog() {
-	let res = await fetch(LANG_URL, { method: 'GET' } ).then(r => { 
+	let res = await fetch(LANG_URL, { method: 'GET' } )
+	.then(r => { 
 		console.log(r);
 		return r; 
 	});
-	if (res.ok !== false)
-	{
-		console.log("ok");
-	}
-	else {
-		console.log("pas ok");
-	}
 	return res.json();
 }
 
@@ -125,7 +119,9 @@ class LudumDareGame
 
 	clic(e)
 	{
-		console.log(get_dialog());
+		console.log("clic");
+		get_dialog().then(console.log);
+		console.log("clic");
 		return;
 	}
 }
