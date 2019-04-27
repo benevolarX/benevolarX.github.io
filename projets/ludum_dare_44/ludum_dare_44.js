@@ -20,7 +20,6 @@ Promise.resolve(get_dialog()
 	return d.dialog;
 }));
 
-
 function drawMultipleLine(ctx, txt, x, y, color, font, font_size, max_w, max_x = 800)
 {
 	let nb_char = txt.length;
@@ -52,7 +51,7 @@ function drawMultipleLine(ctx, txt, x, y, color, font, font_size, max_w, max_x =
 		lines.push(mots[i]);
 		for (i = 0; i < lines.length - 1; i++)
 		{
-			if (i * font_size + font_size > max_x) {
+			if (i * font_size > max_x) {
 				ctx.restore();
 				return { lines, i };
 			}
