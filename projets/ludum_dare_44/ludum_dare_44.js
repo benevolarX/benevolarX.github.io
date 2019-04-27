@@ -12,7 +12,7 @@ async function get_dialog() {
 	let res = await fetch(LANG_URL, { method: 'GET' } );
 	return res.json();
 }
-let repliques = await get_dialog();
+let repliques = get_dialog();
 console.log(repliques.dialog);
 
 function drawMultipleLine(ctx, txt, x, y, color, font, font_size, max_w, max_x = 800)
