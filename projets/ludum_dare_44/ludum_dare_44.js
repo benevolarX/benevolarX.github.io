@@ -11,12 +11,12 @@ const LANG_URL = `${GIT}/lang/${FR}.json`;
 async function get_dialog() {
 	let res = await fetch(LANG_URL, { method: 'GET' } )
 	.then(r => { 
-		console.log(r.body.json());
 		return r; 
 	});
-	return res.json();
+	return res.body.json();
 }
 
+console.log(get_dialog());
 
 function drawMultipleLine(ctx, txt, x, y, color, font, font_size, max_w, max_x = 800)
 {
@@ -119,9 +119,6 @@ class LudumDareGame
 
 	clic(e)
 	{
-		console.log("clic");
-		get_dialog().then(console.log);
-		console.log("clic");
 		return;
 	}
 }
