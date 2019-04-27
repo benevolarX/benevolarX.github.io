@@ -10,7 +10,7 @@ const LANG_URL = `${GIT}/lang/${FR}.json`;
 
 async function get_dialog() {
 	let res = await fetch(LANG_URL, { method: 'GET' } ).then(r => { 
-		console.log(r.json()); 
+		console.log(r);
 		return r; 
 	});
 	if (res.ok !== false)
@@ -20,7 +20,7 @@ async function get_dialog() {
 	else {
 		console.log("pas ok");
 	}
-	return res;
+	return res.json();
 }
 
 
@@ -125,7 +125,8 @@ class LudumDareGame
 
 	clic(e)
 	{
-		return get_dialog();
+		console.log(get_dialog());
+		return;
 	}
 }
 
