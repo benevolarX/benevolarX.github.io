@@ -84,7 +84,7 @@ class Dialogue
 	{
 		rect.draw(ctx);
 		let max_w = (rect.w - 2 * this.bord);
-		let max_h = 200; // rect.h - 2 * this.bord
+		let max_h = rect.h - 2 * this.bord;
 		drawMultipleLine(ctx, this.texte, rect.x + this.bord, rect.y + this.bord + this.font_size, "red", this.font_style, this.font_size, max_w, max_h);
 	}
 }
