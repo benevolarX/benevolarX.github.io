@@ -11,4 +11,4 @@ class Html {
 	}
 }
 
-export default {clearChild };
+export default { clearChild };
