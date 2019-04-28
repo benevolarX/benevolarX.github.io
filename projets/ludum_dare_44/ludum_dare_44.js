@@ -66,13 +66,13 @@ function drawMultipleLine(ctx, txt, x, y, color, font, font_size, max_w, max_x =
 
 class Dialogue
 {
-	constructor(texte)
+	constructor(texte, color = "white", style = "Arial", size = 32, bord = 10)
 	{
 		this.texte = texte;
-		this.font_style = "Arial";
-		this.font_size = 32;
-		this.font_color = "white";
-		this.bord = 10;
+		this.font_style = style;
+		this.font_size = size;
+		this.font_color = color;
+		this.bord = bord;
 	}
 	
 	get font()
@@ -84,8 +84,8 @@ class Dialogue
 	{
 		rect.draw(ctx);
 		let max_w = (rect.w - 2 * this.bord);
-		let max_h = rect.h - 2 * this.bord;
-		drawMultipleLine(ctx, this.texte, rect.x + this.bord, rect.y + this.bord + this.font_size, "red", this.font_style, this.font_size, max_w, max_h);
+		let max_h = (rect.h - 2 * this.bord);
+		drawMultipleLine(ctx, this.texte, rect.x + this.bord, rect.y + this.bord + this.font_size, this.font_color, this.font_style, this.font_size, max_w, max_h);
 	}
 }
 
