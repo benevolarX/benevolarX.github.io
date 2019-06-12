@@ -60,7 +60,6 @@ class Game
 
 	constructor(w, h)
 	{
-		const self = this;
 		const div = document.getElementById('game');
 		this.game = new LudumDareGame();
 		this.canvas = document.createElement('canvas');
