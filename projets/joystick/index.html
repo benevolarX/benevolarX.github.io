@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="UTF-8"/>
+		<title>joystick</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+		<script async src="./joystick.js"></script>
+		<style>
+			html 
+			{
+				box-sizing: border-box;
+			}
+
+			*, *:after, *:before 
+			{
+				box-sizing: inherit;
+				padding: 0;
+				margin: 0;
+			}
+			.center
+			{
+				text-align: center;
+			}
+			
+			body 
+			{
+				background-color: #999;
+			}
+			
+			.full 
+			{
+				min-width: 80%;
+				width: 100vw;
+				min-height: 80%;
+				height: 100vh;
+			}
+			
+			#jeu 
+			{
+				position: absolute;
+				float: right;
+				border: solid;
+				width: 100%;
+				height: 100%;
+			}
+			
+			.stick {
+				float: left;
+				position: absolute;
+				bottom: calc(0px + 150px);
+			}
+		</style>
+	</head>
+	<body>
+		<div class="full">
+			<virtual-joystick class="stick"></virtual-joystick>
+			<canvas id="jeu" width="1950px" height="1080px"></canvas>
+		</div>
+	</body>
+</html>
