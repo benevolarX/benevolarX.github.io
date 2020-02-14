@@ -57,8 +57,9 @@ class VirtualJoystick extends GUIElement
 	}
 
 	// virtual 
-	on_up()
+	on_up(e)
 	{
+		e.preventDefault();
 		this.old_clic_x = this.clic_x = 0;
 		this.old_clic_y = this.clic_y = 0;
 		this.pressed = false;
@@ -83,8 +84,11 @@ class VirtualJoystick extends GUIElement
 		}
 	}
 	
-	on_move(cx, cy)
+	on_move(e)
 	{
+		e.preventDefault();
+		let cx = e.clientX;
+		let cy = e.clientY;
 		let dx = cx - this.centerX;
 		let dy = cy - this.centerY;
 		const hover = Math.sqrt(dx ** 2 + dy ** 2) < (SIZE_STICK / 2);
@@ -100,15 +104,22 @@ class VirtualJoystick extends GUIElement
 
 	// pad
 
-	touch_start = (e) => this.on_down(e);
-	touch_end = (e) => this.on_up();
-	touch_move = (e) => this.on_move(e.clientX, e.clientY);
+	touch_start(e) 
+	{
+		let touch = e.changedTouches[0];
+		let idx	= touch.identifier;
+		var x = touch.pageX;
+		var y = touch.pageY;
+		this.on_down(e);
+	}
+	touch_end = (e) => this.on_up(e);
+	touch_move = (e) => this.on_move(e);
 
 	// mouse
 
 	mouse_down = (e) => this.on_down(e);
-	mouse_up = (e) => this.on_up();
-	mouse_move = (e) => this.on_move(e.clientX, e.clientY);
+	mouse_up = (e) => this.on_up(e);
+	mouse_move = (e) => this.on_move(e);
 	
 	render_canvas()
 	{
