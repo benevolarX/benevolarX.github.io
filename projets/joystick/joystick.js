@@ -61,7 +61,6 @@ class VirtualJoystick extends GUIElement
 	// virtual 
 	on_up(e)
 	{
-		e.preventDefault();
 		this.old_clic_x = this.clic_x = 0;
 		this.old_clic_y = this.clic_y = 0;
 		this.pressed = false;
@@ -130,7 +129,6 @@ class VirtualJoystick extends GUIElement
 	mouse_up = (e) => this.on_up(e);
 	mouse_move(e)
 	{
-		e.preventDefault();
 		this.on_move(e.pageX, e.pageY);
 	}
 	
