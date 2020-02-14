@@ -22,7 +22,6 @@ class GUIElement extends HTMLElement
 	{
 		if (newValue !== oldValue) 
 		{
-			console.log(attrName + oldValue);
 			this[attrName] = this.hasAttribute(attrName);
 		}
 	}
@@ -69,6 +68,7 @@ class VirtualJoystick extends GUIElement
 	
 	on_down(e)
 	{
+		e.preventDefault();
 		if (!this.pressed)
 		{
 			let cx = e.clientX;
@@ -114,7 +114,6 @@ class VirtualJoystick extends GUIElement
 	{
 		if (this.need_render)
 		{
-			console.log("render");
 			let ctx = this.canvas.getContext('2d');
 			ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 			let cx = this.canvas.width / 2;
@@ -142,9 +141,6 @@ class VirtualJoystick extends GUIElement
 			ctx.lineWidth = 6; 
 			ctx.arc(cx, cy, r, 0, Math.PI*2, true); 
 			ctx.stroke();
-			let xxx = this.is_right ? 1 : (this.is_left ? -1 : 0);
-			let yyy = this.is_up ? 1 : (this.is_down ? -1 : 0);
-			console.log(`(${xxx}, ${yyy})`)
 		}
 		this.need_render = false;
 	}
@@ -307,6 +303,5 @@ window.onload = () => {
 		ctx.fill();
 		window.requestAnimationFrame(draw);
 	}
-	console.log(stick.is_left);
 	window.requestAnimationFrame(draw);
 };
