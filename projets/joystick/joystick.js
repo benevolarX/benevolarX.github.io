@@ -47,6 +47,8 @@ class VirtualJoystick extends GUIElement
 		this.mouse_up = this.mouse_up.bind(this);
 		this.mouse_move = this.mouse_move.bind(this);
 		
+		this.identifier = null;
+		
 		if (this.is_touch_device)
 		{
 			this.touch_start = this.touch_start.bind(this);
@@ -69,26 +71,25 @@ class VirtualJoystick extends GUIElement
 	
 	on_down(e)
 	{
-		e.preventDefault();
 		if (!this.pressed)
 		{
-			let cx = e.clientX;
-			let cy = e.clientY;
+			let cx = e.pageX;
+			let cy = e.pageY;
+			console.log(e);
+			console.log(`clientx : ${cx} vs pagex : ${e.pageX}`)
 			let d = this.dst(cx, cy, this.centerX, this.centerY);
 			if (d <= SIZE_STICK / 2)
 			{
 				this.old_clic_x = this.clic_x = cx;
 				this.old_clic_y = this.clic_y = cy;
 				this.pressed = true;
+				this.identifier = e.identifier;
 			}
 		}
 	}
 	
-	on_move(e)
+	on_move(cx, cy)
 	{
-		e.preventDefault();
-		let cx = e.clientX;
-		let cy = e.clientY;
 		let dx = cx - this.centerX;
 		let dy = cy - this.centerY;
 		const hover = Math.sqrt(dx ** 2 + dy ** 2) < (SIZE_STICK / 2);
@@ -106,20 +107,32 @@ class VirtualJoystick extends GUIElement
 
 	touch_start(e) 
 	{
-		let touch = e.changedTouches[0];
-		let idx	= touch.identifier;
-		var x = touch.pageX;
-		var y = touch.pageY;
-		this.on_down(e);
+		this.on_down(e.changedTouches[0]);
 	}
-	touch_end = (e) => this.on_up(e);
-	touch_move = (e) => this.on_move(e);
+	touch_end(e) 
+	{
+		if (this.identifier === e.changedTouches[0].identifier)
+		{
+			this.on_up(e.changedTouches[0]);
+		}
+	}
+	touch_move(e) 
+	{
+		if (this.identifier === e.changedTouches[0].identifier)
+		{
+			this.on_move(e.changedTouches[0].pageX, e.changedTouches[0].pageY);
+		}
+	}
 
 	// mouse
 
 	mouse_down = (e) => this.on_down(e);
 	mouse_up = (e) => this.on_up(e);
-	mouse_move = (e) => this.on_move(e);
+	mouse_move(e)
+	{
+		e.preventDefault();
+		this.on_move(e.pageX, e.pageY);
+	}
 	
 	render_canvas()
 	{
@@ -181,14 +194,15 @@ class VirtualJoystick extends GUIElement
 			this.canvas = this.build_canvas();
 		}
 		// this.canvas.style.setProperty('background', 'red');
-		this.canvas.addEventListener('mousedown', this.mouse_down, false);
-		document.addEventListener('mouseup', this.mouse_up, false);
-		document.addEventListener('mousemove', this.mouse_move, false);
+		this.canvas.addEventListener('mousedown', this.mouse_down);
+		document.addEventListener('mouseup', this.mouse_up);
+		document.addEventListener('mousemove', this.mouse_move);
 		if (this.is_touch_device)
 		{
-			this.canvas.addEventListener('touchstart', this.touch_start, false);
-			document.addEventListener('touchend', this.touch_end, false);
-			document.addEventListener('touchmove', this.touch_move, false);
+			this.canvas.addEventListener('touchstart', this.touch_start);
+			document.addEventListener('touchend', this.touch_end);
+			document.addEventListener('touchcancel', this.touch_end);
+			document.addEventListener('touchmove', this.touch_move);
 		}
 		this.appendChild(this.canvas);
 		this.render_canvas();
@@ -198,13 +212,14 @@ class VirtualJoystick extends GUIElement
 	{
 		if (this.is_touch_device)
 		{
-			this.canvas.removeEventListener('touchstart', this.touch_start, false);
-			document.removeEventListener('touchend', this.touch_end, false);
-			document.removeEventListener('touchmove', this.touch_move, false);
+			this.canvas.removeEventListener('touchstart', this.touch_start);
+			document.removeEventListener('touchend', this.touch_end);
+			document.removeEventListener('touchcancel', this.touch_end);
+			document.removeEventListener('touchmove', this.touch_move);
 		}
-		this.canvas.removeEventListener('mousedown');
-		document.removeEventListener('mouseup');
-		document.removeEventListener('mousemove');
+		this.canvas.removeEventListener('mousedown', this.mouse_down);
+		document.removeEventListener('mouseup', this.mouse_up);
+		document.removeEventListener('mousemove', this.mouse_move);
 		this.removeChild(this.canvas);
 	}
 	
