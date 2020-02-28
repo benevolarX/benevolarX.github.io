@@ -6,37 +6,28 @@ const MAX_MOVE = 30;
 const COLOR_STICK = '#0000A2';
 const COLOR_STICK_HOVER = '#B2B2FF';
 
-class GUIElement extends HTMLElement
+class VirtualJoystick extends HTMLElement
 {
 	constructor()
 	{
 		super();
-	}
-	
-	dst(x, y, dx, dy)
-	{
-		return Math.sqrt( ((dx - x) ** 2) + ((dy - y) ** 2) );
-	}
-	
-	attributeChangedCallback(attrName, oldValue, newValue) 
-	{
-		if (newValue !== oldValue) 
-		{
-			this[attrName] = this.hasAttribute(attrName);
-		}
-	}
-}
+		this.size_block = (this.hasAttribute("size-block"))
+		? this.getAttribute("size-block") : SIZE_BLOC;
+		
+		this.size_stick = (this.hasAttribute("size-stick"))
+		? this.getAttribute("size-stick") : SIZE_STICK;
 
-class VirtualJoystick extends GUIElement 
-{
-	constructor()
-	{
-		super();
+		this.color_stick = (this.hasAttribute("color-stick"))
+		? this.getAttribute("color-stick") : COLOR_STICK;
+		
+		this.color_stick_hover = (this.hasAttribute("color-stick-hover"))
+		? this.getAttribute("color-stick-hover") : COLOR_STICK_HOVER;
+		
+		this.survol = false;
 		this.canvas = null;
 		this.pressed = false;
 		this.old_clic_x = this.clic_x = 0;
 		this.old_clic_y = this.clic_y = 0;
-		this.c = COLOR_STICK;
 		this.need_render = true;
 		
 		this.on_move = this.on_move.bind(this);
@@ -57,6 +48,11 @@ class VirtualJoystick extends GUIElement
 		}
 		
 	}
+	
+	dst(x, y, dx, dy)
+	{
+		return Math.sqrt( ((dx - x) ** 2) + ((dy - y) ** 2) );
+	}
 
 	// virtual 
 	on_up(e)
@@ -74,10 +70,8 @@ class VirtualJoystick extends GUIElement
 		{
 			let cx = e.pageX;
 			let cy = e.pageY;
-			console.log(e);
-			console.log(`clientx : ${cx} vs pagex : ${e.pageX}`)
 			let d = this.dst(cx, cy, this.centerX, this.centerY);
-			if (d <= SIZE_STICK / 2)
+			if (d <= this.size_stick / 2)
 			{
 				this.old_clic_x = this.clic_x = cx;
 				this.old_clic_y = this.clic_y = cy;
@@ -87,12 +81,13 @@ class VirtualJoystick extends GUIElement
 		}
 	}
 	
-	on_move(cx, cy)
+	on_move(e)
 	{
+		let cx = e.pageX;
+		let cy = e.pageY;
 		let dx = cx - this.centerX;
 		let dy = cy - this.centerY;
-		const hover = Math.sqrt(dx ** 2 + dy ** 2) < (SIZE_STICK / 2);
-		this.color = hover ? COLOR_STICK_HOVER : COLOR_STICK;
+		this.hover = Math.sqrt(dx ** 2 + dy ** 2) < (this.size_stick / 2);
 		if (this.pressed)
 		{
 			this.clic_x = cx;
@@ -103,7 +98,6 @@ class VirtualJoystick extends GUIElement
 	}
 
 	// pad
-
 	touch_start(e) 
 	{
 		this.on_down(e.changedTouches[0]);
@@ -119,18 +113,14 @@ class VirtualJoystick extends GUIElement
 	{
 		if (this.identifier === e.changedTouches[0].identifier)
 		{
-			this.on_move(e.changedTouches[0].pageX, e.changedTouches[0].pageY);
+			this.on_move(e.changedTouches[0]);
 		}
 	}
 
 	// mouse
-
 	mouse_down = (e) => this.on_down(e);
 	mouse_up = (e) => this.on_up(e);
-	mouse_move(e)
-	{
-		this.on_move(e.pageX, e.pageY);
-	}
+	mouse_move = (e) => this.on_move(e);
 	
 	render_canvas()
 	{
@@ -142,7 +132,7 @@ class VirtualJoystick extends GUIElement
 			let cy = this.canvas.height / 2;
 			let r = Math.min(cx, cy) * 0.9;
 			ctx.beginPath(); 
-			ctx.strokeStyle = COLOR_STICK;
+			ctx.strokeStyle = this.color_stick;
 			ctx.lineWidth = 2;
 			ctx.arc(cx, cy, r, 0, Math.PI*2, true); 
 			ctx.stroke();
@@ -159,7 +149,7 @@ class VirtualJoystick extends GUIElement
 			cx += ax;
 			cy += ay;
 			ctx.beginPath(); 
-			ctx.strokeStyle	= this.c;
+			ctx.strokeStyle	= this.is_hover ? this.color_stick_hover : this.color_stick;
 			ctx.lineWidth = 6; 
 			ctx.arc(cx, cy, r, 0, Math.PI*2, true); 
 			ctx.stroke();
@@ -170,8 +160,8 @@ class VirtualJoystick extends GUIElement
 	build_canvas()
 	{
 		let canvas = document.createElement('canvas');
-		canvas.width = SIZE_BLOC;
-		canvas.height = SIZE_BLOC;
+		canvas.width = this.size_block;
+		canvas.height = this.size_block;
 		canvas.style.position = "absolute";
 		canvas.style.zIndex = 255;
 		canvas.style.background = "rgba(0, 0, 0, 0.02)";
@@ -179,7 +169,6 @@ class VirtualJoystick extends GUIElement
 	}
 	
 	// html element
-
 	connectedCallback() 
 	{
 		this.attachEvents();
@@ -221,15 +210,38 @@ class VirtualJoystick extends GUIElement
 		this.removeChild(this.canvas);
 	}
 	
-	// getter & setter
-	
-	set color(val)
+	// setter
+	set stick_color(val)
 	{
-		if (val !== this.c)
+		if (val !== this.color_stick)
 		{
 			this.need_render = true;
-			this.c = val;
+			this.color_stick = val;
 		}
+	}
+	
+	set color_hover(val)
+	{
+		if (val !== this.color_stick_hover)
+		{
+			this.need_render = true;
+			this.color_stick_hover = val;
+		}
+	}
+	
+	set hover(val)
+	{
+		if (this.survol !== val)
+		{
+			this.need_render = true;
+			this.survol = val;
+		}
+	}
+	
+	// getter
+	get is_hover()
+	{
+		return this.pressed || this.survol;
 	}
 	
 	get is_touch_device() 
@@ -237,14 +249,14 @@ class VirtualJoystick extends GUIElement
 		return 'ontouchstart' in window;
 	}
 	
-	get posX() 
+	get centerX()
 	{
-		return this.canvas.getBoundingClientRect().x;
+		return this.canvas.getBoundingClientRect().x + this.canvas.width / 2;
 	}
 	
-	get posY() 
+	get centerY()
 	{
-		return this.canvas.getBoundingClientRect().y;
+		return this.canvas.getBoundingClientRect().y + this.canvas.height / 2;
 	}
 	
 	get deltaX()
@@ -292,40 +304,6 @@ class VirtualJoystick extends GUIElement
 		let dy = this.deltaY;
 		return !(Math.abs(dy) > 2*Math.abs(dx));
 	}
-	
-	get centerX()
-	{
-		return this.posX + this.canvas.width / 2;
-	}
-	
-	get centerY()
-	{
-		return this.posY + this.canvas.height / 2;
-	}
 }
 
 window.customElements.define('virtual-joystick', VirtualJoystick);
-
-window.onload = () => {
-	let jeu = document.getElementById('jeu');
-	let stick = document.querySelector('virtual-joystick');
-	let cx = jeu.width / 2;
-	let cy = jeu.height / 2;
-	let draw = () => {
-		let ctx = jeu.getContext('2d');
-		ctx.clearRect(0, 0, jeu.width, jeu.height);
-		
-		let xxx = stick.is_right ? 1 : (stick.is_left ? -1 : 0);
-		let yyy = stick.is_up ? -1 : (stick.is_down ? 1 : 0);
-		cx += (xxx * 3);
-		cy += (yyy * 3);
-		
-		ctx.beginPath(); 
-		ctx.fillStyle = "red";
-		ctx.lineWidth = 2;
-		ctx.arc(cx, cy, 30, 0, Math.PI*2, true); 
-		ctx.fill();
-		window.requestAnimationFrame(draw);
-	}
-	window.requestAnimationFrame(draw);
-};
