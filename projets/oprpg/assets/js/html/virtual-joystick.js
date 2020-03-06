@@ -12,10 +12,10 @@ class VirtualJoystick extends HTMLElement
 	{
 		super();
 		this.size_block = (this.hasAttribute("size-block"))
-		? this.getAttribute("size-block") : SIZE_BLOC;
+		? parseInt(this.getAttribute("size-block")) : SIZE_BLOC;
 		
 		this.size_stick = (this.hasAttribute("size-stick"))
-		? this.getAttribute("size-stick") : SIZE_STICK;
+		? parseInt(this.getAttribute("size-stick")) : SIZE_STICK;
 
 		this.color_stick = (this.hasAttribute("color-stick"))
 		? this.getAttribute("color-stick") : COLOR_STICK;
@@ -165,6 +165,7 @@ class VirtualJoystick extends HTMLElement
 		canvas.style.position = "absolute";
 		canvas.style.zIndex = 255;
 		canvas.style.background = "rgba(0, 0, 0, 0.02)";
+		console.log(canvas);
 		return canvas;
 	}
 	
@@ -229,6 +230,9 @@ class VirtualJoystick extends HTMLElement
 		}
 	}
 	
+	/**
+	 * @param {boolean} val
+	 */
 	set hover(val)
 	{
 		if (this.survol !== val)
