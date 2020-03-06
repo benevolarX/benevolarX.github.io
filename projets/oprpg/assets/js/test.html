@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="UTF-8"/>
+		<title>test</title>
+		<meta name="viewport" content="width=device-width,height=device-height initial-scale=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+		<script async src="html/pseudo.js"></script>
+		<style>
+			html 
+			{
+				box-sizing: border-box;
+			}
+			
+			body 
+			{
+				background-color: #999;
+			}
+
+			*, *:after, *:before 
+			{
+				box-sizing: inherit;
+				padding: 0;
+				margin: 0;
+			}
+			
+			:root {
+				--tchat-color: #111;
+			}
+			
+			.center
+			{
+				text-align: center;
+			}
+			
+			.full 
+			{
+				min-width: 80%;
+				width: 100vw;
+				min-height: 80%;
+				height: 100%;
+			}
+
+			.stick {
+				float: left;
+				position: absolute;
+				bottom: calc(0px + 150px + 10%);
+				left: calc(0px + 10%);
+			}
+			
+			#jeu 
+			{
+				position: absolute;
+				float: right;
+				border: solid;
+				width: 100%;
+				height: 100%;
+			}
+			
+			.modo {
+				color: red;
+			}
+			
+			.admin {
+				color : #1ABAFF;
+			}
+			
+			#tchat {
+				background-color: var(--tchat-color, red);
+				color: white;
+				min-height: 300px;
+			}
+		</style>
+		
+	</head>
+	<body>
+		<div class="full">
+			<script>
+				window.onload = () => {
+					function speak_to(pseudo) {
+						let texte = document.getElementById('msg');
+						texte.appendChild(document.createTextNode(`${pseudo.innerHTML} > `));
+					}
+					
+					function benevolar() {
+						let benevolar = document.createElement('pseudo-joueur');
+						benevolar.num = 1;
+						benevolar.classList.add('admin');
+						benevolar.onclick = speak_to(benevolar);
+						benevolar.innerHTML = ' benevolar ';
+						return benevolar;
+					}
+				
+					function modo() {
+						let modo = document.createElement('pseudo-joueur');
+						modo.num = 2;
+						modo.classList.add('modo');
+						modo.onclick = speak_to(modo);
+						modo.innerHTML = ' modo ';
+						return modo;
+					}
+					
+					let btn = document.getElementById('send');
+					btn.onclick = e => {
+						e.preventDefault();
+						let d = (new Date()).toLocaleString();
+						let texte = document.getElementById('msg').value;
+						let msg = document.createElement('p');
+						msg.appendChild(document.createTextNode(`[${d}]`));
+						let pseudos = document.getElementsByName('pseudo');
+						if (pseudos[0].checked)
+						{
+							let qui = benevolar();
+							qui.onclick = e => {
+								let tt = document.getElementById('msg');
+								tt.value = tt.value + `benevolar > `;
+							};
+							msg.appendChild(qui);
+						}
+						else {
+							let qui = modo();
+							qui.onclick = e => {
+								let tt = document.getElementById('msg');
+								tt.value = tt.value + `modo > `;
+							};
+							msg.appendChild(qui);
+						}
+						msg.appendChild(document.createTextNode(texte));
+						let tchat = document.getElementById('tchat');
+						tchat.appendChild(msg);
+						document.getElementById('msg').value = "";
+					};
+				};
+			</script>
+			
+			<div id="tchat">
+				<form>
+					<input type="radio" name="pseudo" value="benevolar">
+					<pseudo-joueur num='1' class='admin' >benevolar</pseudo-joueur> 
+					<input type="radio" name="pseudo" value="modo">
+					<pseudo-joueur num='2' class='modo' >modo</pseudo-joueur>					
+					<textarea id="msg"></textarea>
+					<button id="send" >envoyer</button>
+				</form>
+			</div>
+		</div>
+	</body>
+</html>
