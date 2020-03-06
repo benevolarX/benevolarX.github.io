@@ -5,43 +5,9 @@
 		<title>mini tchat</title>
 		<meta name="viewport" content="width=device-width,height=device-height initial-scale=1">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+		<link media="all" rel="stylesheet" href="../assets/css/b-css.min.css" />
 		<script async src="../assets/js/html/pseudo.js"></script>
-		<style>
-			html 
-			{
-				box-sizing: border-box;
-			}
-			
-			body 
-			{
-				background-color: #000;
-			}
-
-			*, *:after, *:before 
-			{
-				box-sizing: inherit;
-				padding: 0;
-				margin: 0;
-			}
-			
-			:root {
-				--tchat-color: #111;
-				--tchat-text: #FFF;
-			}
-			
-			.center
-			{
-				text-align: center;
-			}
-			
-			.full 
-			{
-				min-width: 80%;
-				width: 100vw;
-				min-height: 80%;
-				height: 100%;
-			}
-
+		<style>	
 			.modo {
 				color: red;
 			}
@@ -51,30 +17,55 @@
 			}
 			
 			#tchat {
-				background-color: var(--tchat-color, black);
-				color: var(--tchat-text, white);
-				min-height: 300px;
+				--background-color: var(--tchat-color, black);
+				--color: var(--tchat-text, white);
+				min-height: 290px;
+				max-height: 310px;
+				height: 300px;
 			}
 			
 			#msg {
-				min-width: 500px;
-				min-height: 200px;
+				min-width: 300px;
+				height: 50px;
+			}
+
+			.border-solid {
+				--border-color: rgb(11, 33, 226);
+				--border-style: solid;
+				--border-width: 1px;
+			}
+
+			.retour {
+				max-width: 200px;
+				max-height: 100px;
+				float: left;
+				position: absolute;
+				top: 1%;
+				left: 1%;
+				z-index: 300;
+				--background-color: white;
+				--color: black;
 			}
 		</style>
 	</head>
 	<body>
-		<div class="full">
-			<div id="tchat">
-				<form>
-					<div class="slidecontainer">
-						<input type="range" min="0" max="255" value="64" onchange="change_color(this)">
-					</div>
+		<div class="body">
+			<div>
+				<div class="retour" >
+					<a href="../index.html" class="btn">retour</a>
+				</div>
+				
+				<div id="tchat">
+
+				</div>
+				<form class="border-solid">
 					<input type="radio" name="pseudo" value="benevolar">
 					<pseudo-joueur num='1' class='admin' >benevolar</pseudo-joueur> 
 					<input type="radio" name="pseudo" value="modo">
 					<pseudo-joueur num='2' class='modo' >modo</pseudo-joueur>					
-					<textarea id="msg"></textarea>
+					<textarea id="msg" class="border-solid" placeholder="votre message"></textarea>
 					<button id="send" >envoyer</button>
+					<input type="range" min="0" max="255" value="64" onchange="change_color(this)">
 				</form>
 			</div>
 		</div>
@@ -133,6 +124,7 @@
 					let tchat = document.getElementById('tchat');
 					tchat.appendChild(msg);
 					document.getElementById('msg').value = "";
+					tchat.scrollBy(0, tchat.scrollHeight);
 				};
 			};
 			
