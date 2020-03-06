@@ -4,19 +4,36 @@
 		<meta charset="UTF-8"/>
 		<title>oprpg</title>
 		<meta name="viewport" content="width=device-width,height=device-height initial-scale=1">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+        <link media="all" rel="stylesheet" href="./assets//css//b-css.min.css" />
+        <style>
+            body {
+                width: 100vw;
+                height: 100vh;
+                background-image: url('./assets/img/fond_ecran/fond_ecran_ace.jpg');
+                background-position: center;
+                background-size: cover;
+                background-repeat: no-repeat;
+            }
+
+            .body {
+                --background-color: rgba(255,255,255,0.1);
+                height: 100vh;
+            }
+        </style>
 	</head>
 	<body>
-        <h1>Oprpg tests</h1>
-
-        <section>
-            <h2>Liste des pages de test : </h2>
-
-            <ul>
-                <li>
-                    <a href="./joystick/index.html">joystick</a>
-                </li>
-            </ul>
-        </section>
+        <div class="body">
+            <h1>Oprpg tests</h1>
+            <hr/>
+            <section>
+                <h2>Liste des pages de test : </h2>
+                <ul>
+                    <li>
+                        <a href="./joystick/index.html">joystick</a>
+                    </li>
+                </ul>
+            </section>
+        </div>
 	</body>
 </html>
