@@ -164,8 +164,7 @@ class VirtualJoystick extends HTMLElement
 		canvas.height = this.size_block;
 		canvas.style.position = "absolute";
 		canvas.style.zIndex = 255;
-		canvas.style.background = "rgba(0, 0, 0, 0.02)";
-		console.log(canvas);
+		canvas.style.background = "rgba(0, 0, 0, 0.0)";
 		return canvas;
 	}
 	
@@ -181,7 +180,6 @@ class VirtualJoystick extends HTMLElement
 		{
 			this.canvas = this.build_canvas();
 		}
-		// this.canvas.style.setProperty('background', 'red');
 		this.canvas.addEventListener('mousedown', this.mouse_down);
 		document.addEventListener('mouseup', this.mouse_up);
 		document.addEventListener('mousemove', this.mouse_move);

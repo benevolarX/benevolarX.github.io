@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="UTF-8"/>
+		<title>full screen</title>
+		<meta name="viewport" content="width=device-width,height=device-height initial-scale=1" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+		<link media="all" rel="stylesheet" href="../assets/css/b-css.min.css" />
+		<link media="all" rel="stylesheet" href="../assets/css/classic.css" />
+	</head>
+	<body>
+		<div class="full flex">
+			<div class="retour" >
+				<a href="../index.html" class="btn">retour</a>
+			</div>
+			<canvas class="bg-red" id="jeu" width="1280" height="960"></canvas>
+		</div>
+		<script>
+			function draw(img) {
+				let canvas = document.getElementById("jeu");
+				let ctx = canvas.getContext("2d");
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+				let w = img.width;
+				let h = img.height;
+				console.log(`image : ${w} x ${h} !`);
+
+				let pw = canvas.clientWidth;
+				let ph = canvas.clientHeight;
+				canvas.width = pw;
+				canvas.height = ph;
+				let r1 = canvas.width / img.width;
+				let r2 = canvas.height / img.height;
+				let r = Math.min(r1, r2);
+				let nw = img.width * r;
+				let nh = img.height * r;
+				let nx = (canvas.width - nw) / 2;
+				let ny = (canvas.height - nh) / 2;
+				ctx.drawImage(img, nx, ny, nw, nh);
+			}
+			window.onload = function() {
+				let img = new Image();
+				img.src = "../assets/img/test/full-screen.png";
+				img.onload = () => draw(img);
+				window.onresize = () => draw(img);
+			};
+		</script>
+	</body>
+</html>
