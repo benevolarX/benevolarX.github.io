@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="fr">
+   <head>
+      <meta charset="UTF-8">
+      <title>sokudo solver</title>
+      <style>
+         *, *:after, *:before {
+            box-sizing: border-box;
+         }
+      </style>
+   </head>
+   <body>
+      <main id='main'></main>
+   </body>
+   <script type="module" >
+      class Nombre {
+         constructor(numero, val = 0, modifiable = true) {
+            this.numero = numero;
+            this.val = val;
+            this.modifiable = modifiable;
+            this.ligne = null;
+            this.colone = null;
+            this.carre = null;
+         }
+         setEnsemble(title, ensemble) {
+            switch (title) {
+               case 'ligne': {
+                  this.ligne = ensemble;
+                  break;
+               }
+               
+               case 'colone': {
+                  this.colone = ensemble;
+                  break;
+               }
+               
+               case 'carre': {
+                  this.carre = ensemble;
+                  break;
+               }
+            }
+         }
+      }
+      class EnsembleNombre {
+         constructor(title) {
+            this.title = title;
+            this.ensemble = [];
+         }
+         add(n) {
+            this.ensemble.push(n);
+         }
+         get Plein() { return this.ensemble.length >= 9; }
+      }
+      class Sudoku {
+         constructor() {
+            this.lignes = [];
+            this.colones = [];
+            this.carres = [];
+            for (let i = 0; i < 9; i++) {
+               let ligne = new EnsembleNombre('ligne');
+               this.lignes.push(ligne);
+               let colone = new EnsembleNombre('colone');
+               this.colones.push(colones);
+               let carre = new EnsembleNombre('carre');
+               this.carres.push(carres);
+            }
+            let c_x = 0;
+            let c_y = 0;
+            let cpt = 0;
+            for (let i = 0; i < 9; i++) {
+               for (let j = 0; j < 9; j++) {
+                  const index = i * 9 + j;
+                  let nombre = new Nombre(index);
+                  this.colones[i].add(nombre);
+                  this.colones[j].add(nombre);
+                  let c = c_y * 3 + c_x;
+                  while (this.carres[c].Plein) {
+                     c_x++;
+                     c = c_y * 3 + c_x;
+                  }
+                  this.carres[c].add(nombre);
+                  cpt++;
+                  if (cpt > 2) {
+                     c_y++;
+                     c_y %= 3;
+                     cpt = 0;
+                  }
+               }
+            }
+         }
+      }
+      
+      window.onload = () => {
+         
+      };
+   </script>
+</html>

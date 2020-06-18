@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, shrink-to-fit=no" />
+        <title>Rubik's cube</title>	
+		<style>
+            :root {
+                --mini-carre: 100px;
+                --rx: 0deg;
+                --ry: 0deg;
+                --rz: 0deg;
+                --tx: 0;
+                --ty: 0;
+                --tz: 0;
+                --color: black;
+                --n-rx: 0deg;
+                --n-ry: 0deg;
+                --n-rz: 0deg;
+            }
+
+            html {
+                height: 100%;
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            body {
+                background-color: black;
+                min-height: 100vh;
+                margin: 0;
+                padding: 0;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+
+            main {
+                background-color: rgba(255,255,255,0.5);
+                min-width: 600px;
+                min-height: 600px;
+                perspective: 2000px;
+                transition-duration: 2s;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            #cube {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                top: 50%; left: 50%;
+                backface-visibility: visible;
+                perspective-origin: center;
+                transform-style: preserve-3d;
+                transition-duration: 2s;
+                transform: rotate3d(400, 400, 100, 1.5turn);
+            }
+
+            .mini-carre {
+                width: calc(var(--mini-carre) - 1px);
+                height: calc(var(--mini-carre) - 1px);
+                background-color: var(--color);
+                border: solid 1 black;
+                backface-visibility: visible;
+                position: absolute;
+                transform: rotateX(var(--rx)) rotateY(var(--ry)) rotateZ(var(--rz))
+                translateX(var(--tx)) translateY(var(--ty)) ;
+            }
+
+            .face {
+                transform: translateZ(150px)
+            }
+            
+            .k-1 {
+                --ry: 180deg;
+            }
+
+            .k-2 {
+                --ry: 90deg;
+            }
+            
+            .k-3 {
+                --ry: -90deg;
+            }
+
+            .k-4 {
+                --rx: 90deg;
+            }
+
+            .k-5 {
+                --rx: -90deg;
+            }
+        </style>
+	</head>
+
+	<body>
+        <main>
+        </main>
+        <script>
+            window.onload = () => {
+                let main = document.querySelector('main');
+                let cube = document.createElement('div');
+                cube.id = 'cube';
+                let colors = [
+                    'rgba(250, 0, 0, 0.2)', 
+                    'rgba(0, 250, 0, 0.2)', 
+                    'rgba(0, 0, 250, 0.2)', 
+                    'rgba(50, 150, 150, 0.2)', 
+                    'rgba(250, 250, 250, 0.2)', 
+                    'rgba(100, 0, 50, 0.2)'
+                ];
+                for (let k = 0; k < 6; k++) {
+                    let face = document.createElement('div');
+                    face.classList.add('face', `k-${k}`);
+                    for (let i = 0; i < 3; i++) {
+                        for (let j = 0; j < 3; j++) {
+                            let div = document.createElement('div');
+                            div.classList.add(`mini-carre`, `i-${i}`, `j-${j}`);
+
+                            div.style.setProperty('--tx', `calc( (-1.5 * var(--mini-carre)) + (${i} * var(--mini-carre)) )`);
+                            div.style.setProperty('--ty', `calc( (-1.5 * var(--mini-carre)) + (${j} * var(--mini-carre)) )`);
+                            /*
+                            div.style.setProperty('--rx', `calc(${k} * 90deg)`);
+                            div.style.setProperty('--ry', `calc(${k} * 90deg)`);
+                            div.style.setProperty('--tz', `calc(${k} * var(--mini-carre))`);*/
+                            div.style.setProperty('--color', `${colors[k]}`);
+                            face.appendChild(div);
+                        }
+                    }
+                    cube.appendChild(face)
+                }
+                main.appendChild(cube);
+            };
+        </script>
+	</body>
+	
+</html>

@@ -20,7 +20,7 @@ const JOKER = 4;
 const COULEUR = ["rouge", "bleu", "vert", "jaune", "joker", "dos"];
 const VALEUR = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "plus_2", "passe_tour", "change_sens", "plus_4", "change_couleur", "dos"];
 
-const ASSET_DOS = "../assets/cartes/dos.png";
+const ASSET_DOS = "../assets/uno/dos.png";
 
 function shuffle(a) 
 {
@@ -58,7 +58,7 @@ class Carte
 	}
 	
 	get Url() {
-		return `../assets/cartes/${VALEUR[this.valeur]}_${COULEUR[this.couleur]}.png`;
+		return `../assets/uno/${VALEUR[this.valeur]}_${COULEUR[this.couleur]}.png`;
 	}
 	
 	toString() 
