@@ -136,9 +136,8 @@ class Firework {
 		this.canvas.style.width = this.screen_width + 'px';
 		this.canvas.style.height = this.screen_height + 'px';
 		this.canvas.style.position = 'absolute';
-		this.canvas.style.top = '0px';
-		this.canvas.style.left = '0px';
 		this.canvas.style.opacity = this.options.opacity;
+		this.canvas.classList.add(this.options.classNames ?? '');
 		this.context = this.canvas.getContext('2d');
 		this.pc_flash = 100.0;
 		this.cpt_launch = 0;

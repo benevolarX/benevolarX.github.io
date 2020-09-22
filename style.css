@@ -26,6 +26,12 @@ body {
     width: 100%;
 }
 
+.demo {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 /**
 menu deroulant
 **/
