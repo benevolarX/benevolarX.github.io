@@ -7,16 +7,34 @@
 		<style>
             :root {
                 --mini-carre: 100px;
-                --rx: 0deg;
-                --ry: 0deg;
-                --rz: 0deg;
+                --color: black;
+
                 --tx: 0;
                 --ty: 0;
-                --tz: 0;
-                --color: black;
-                --n-rx: 0deg;
-                --n-ry: 0deg;
-                --n-rz: 0deg;
+
+                --cx: 0deg;
+                --cy: 0deg;
+                --cz: 0deg;
+
+                --deca: 150px;
+                --face: rotate3d(0, 0, 0, 0);
+
+                --rx0: 0deg;
+                --rx1: 0deg;
+                --rx2: 0deg;
+
+                --rx: rotateX(0deg);
+                --ry: rotateY(0deg);
+                --rz: rotateZ(0deg);
+            }
+
+            .test {
+                color : rgb(227, 28, 36);
+                color : rgb(27, 90, 250);
+                color : rgb(0, 179, 72);
+                color : rgb(231, 225, 2);
+                color : rgb(250, 250, 250);
+                color : rgb(255, 114, 3);
             }
 
             html {
@@ -37,95 +55,191 @@
             }
 
             main {
-                background-color: rgba(255,255,255,0.5);
+                background-color: transparent;
                 min-width: 600px;
                 min-height: 600px;
-                perspective: 2000px;
-                transition-duration: 2s;
+                perspective: 100000px;
+                perspective-origin: center;
+                transform-style: preserve-3d;
                 display: flex;
                 align-items: center;
                 justify-content: center;
             }
 
             #cube {
+                background-color: transparent;
+                display: flex;
+                align-items: center;
+                justify-content: center;
                 position: absolute;
-                width: 100%;
-                height: 100%;
-                top: 50%; left: 50%;
                 backface-visibility: visible;
                 perspective-origin: center;
                 transform-style: preserve-3d;
-                transition-duration: 2s;
-                transform: rotate3d(400, 400, 100, 1.5turn);
+                transition-duration: 400ms;
+                transform: rotateX(var(--cx)) rotateY(var(--cy)) rotateZ(var(--cz));
             }
 
+            .front {
+                --face: translateZ(calc(var(--deca)));
+            }
+            
+            .back {
+                --face: translateZ(calc(-1 * var(--deca)));
+            }
+
+            .top {
+                --face: rotateX(90deg) translateZ(calc(var(--deca)));
+            }
+            
+            .bottom {
+                --face: rotateX(90deg) translateZ(calc(-1 * var(--deca)));
+            }
+            
+            .left {
+                --face: rotateY(-90deg) translateZ(calc(var(--deca)));
+            }
+
+            .right {
+                --face: rotateY(-90deg) translateZ( calc(-1 * var(--deca)) );
+            }
+
+            .i-0 {
+                --tx: calc(-1 * var(--mini-carre));
+            }
+
+            .i-2 {
+                --tx: calc(var(--mini-carre));
+            }
+
+            .j-0 {
+                --ty: calc(-1 * var(--mini-carre));
+            }
+
+            .j-2 {
+                --ty: calc(var(--mini-carre));
+            }
+            
             .mini-carre {
+                position: absolute;
                 width: calc(var(--mini-carre) - 1px);
                 height: calc(var(--mini-carre) - 1px);
                 background-color: var(--color);
                 border: solid 1 black;
                 backface-visibility: visible;
-                position: absolute;
-                transform: rotateX(var(--rx)) rotateY(var(--ry)) rotateZ(var(--rz))
-                translateX(var(--tx)) translateY(var(--ty)) ;
+                transform: var(--rx) var(--ry) var(--rz) var(--face) translateX(var(--tx)) translateY(var(--ty));
             }
 
             .face {
-                transform: translateZ(150px)
-            }
-            
-            .k-1 {
-                --ry: 180deg;
-            }
-
-            .k-2 {
-                --ry: 90deg;
-            }
-            
-            .k-3 {
-                --ry: -90deg;
+                --deca: 50px;
+                position: absolute;
+                background-color: rgba(200, 200, 200, 0.4);
+                width: 300px;
+                height: 300px;
+                transform: var(--rx) var(--ry) var(--rz) var(--face);
+                transform-style: preserve-3d;
             }
 
-            .k-4 {
-                --rx: 90deg;
-            }
-
-            .k-5 {
-                --rx: -90deg;
-            }
         </style>
 	</head>
 
 	<body>
         <main>
         </main>
+        <div>
+            <table>
+                <tr>
+                    <td></td>
+                    <td><button class="btn" onclick="tourner(36, 0)">&#8679;</button></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><button class="btn" onclick="tourner(0, -36)">&#8678;</button></td>
+                    <td><button class="btn" onclick="special()">O</button></td>
+                    <td><button class="btn" onclick="tourner(0, 36)">&#8680;</button></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><button class="btn" onclick="tourner(-36, 0)">&#8681;</button></td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
         <script>
+
+            function tourner(x, y) {
+                const styles = getComputedStyle(document.documentElement);
+                const rx = styles.getPropertyValue('--cx');
+                const ry = styles.getPropertyValue('--cy');
+                const val_rx = parseInt(rx.replace('deg', ''));
+                const n_val_rx = (val_rx + x);
+                document.documentElement.style.setProperty('--cx', `${n_val_rx}deg`);
+                const val_ry = parseInt(ry.replace('deg', ''));
+                const n_val_ry = (val_ry + y);
+                document.documentElement.style.setProperty('--cy', `${n_val_ry}deg`);
+            }
+
+            function special(dir9 = 0, tour = 1) {
+                let rep = document.querySelectorAll('.front');
+                rep.forEach(e => {
+                    e.style.setProperty('--rz', 'rotateZ(30deg)');
+                })
+                console.log(rep);
+            }
+
+
             window.onload = () => {
+                document.addEventListener('keydown', e => {
+                    const key = e.key;
+                    const vitesse = 20;
+                    if (key === 'ArrowRight') {
+                        tourner(0, vitesse);
+                    }
+                    if (key === 'ArrowLeft') {
+                        tourner(0, -vitesse);
+                    }
+                    if (key === 'ArrowUp') {
+                        tourner(vitesse, 0);
+                    }
+                    if (key === 'ArrowDown') {
+                        tourner(-vitesse, 0);
+                    }
+                });
                 let main = document.querySelector('main');
                 let cube = document.createElement('div');
                 cube.id = 'cube';
                 let colors = [
-                    'rgba(250, 0, 0, 0.2)', 
-                    'rgba(0, 250, 0, 0.2)', 
-                    'rgba(0, 0, 250, 0.2)', 
-                    'rgba(50, 150, 150, 0.2)', 
-                    'rgba(250, 250, 250, 0.2)', 
-                    'rgba(100, 0, 50, 0.2)'
+                    'rgb(227, 28, 36)', 
+                    'rgb(27, 90, 250)', 
+                    'rgb(0, 179, 72)', 
+                    'rgb(231, 225, 2)', 
+                    'rgb(250, 250, 250)', 
+                    'rgb(255, 114, 3)',
+                    'black'
                 ];
+                let faces = ['front', 'back', 'right', 'left', 'top', 'bottom'];
+
+                let kub = [
+                    []
+                ];
+
                 for (let k = 0; k < 6; k++) {
                     let face = document.createElement('div');
-                    face.classList.add('face', `k-${k}`);
+                    face.classList.add('face', `${faces[k]}`);
                     for (let i = 0; i < 3; i++) {
                         for (let j = 0; j < 3; j++) {
                             let div = document.createElement('div');
-                            div.classList.add(`mini-carre`, `i-${i}`, `j-${j}`);
-
-                            div.style.setProperty('--tx', `calc( (-1.5 * var(--mini-carre)) + (${i} * var(--mini-carre)) )`);
-                            div.style.setProperty('--ty', `calc( (-1.5 * var(--mini-carre)) + (${j} * var(--mini-carre)) )`);
-                            /*
-                            div.style.setProperty('--rx', `calc(${k} * 90deg)`);
-                            div.style.setProperty('--ry', `calc(${k} * 90deg)`);
-                            div.style.setProperty('--tz', `calc(${k} * var(--mini-carre))`);*/
+                            div.classList.add(`${faces[k]}`, `mini-carre`, `i-${i}`, `j-${j}`, `k-${k}`);
+                            if (i === 1 && j === 1) {
+                                div.classList.add('mid');
+                            }
+                            else {
+                                if (i === 1 || j === 1) {
+                                    div.classList.add('arete');
+                                }
+                                else {
+                                    div.classList.add('coin');
+                                }
+                            }
                             div.style.setProperty('--color', `${colors[k]}`);
                             face.appendChild(div);
                         }

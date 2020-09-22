@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, shrink-to-fit=no" />
+        <title>Rubik's cube</title>	
+		<style>
+            html {
+                height: 100%;
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            body {
+                background-color: black;
+                min-height: 100vh;
+                margin: 0;
+                padding: 0;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .perspective {
+                perspective: 3000px;
+                transform-style: preserve-3d;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            @keyframes rx360 {
+                0% {
+                    transform: rotateX(0deg);
+                }
+                30% {
+                    transform: rotateX(90deg);
+                }
+                50% {
+                    transform: rotateX(90deg);
+                }
+                60% {
+                    transform: rotateX(90deg) rotateZ(90deg);
+                }
+                65% {
+                    transform: rotateX(90deg) rotateZ(90deg) scaleY(10) scaleZ(10);
+                }
+                90% {
+                    transform: rotateX(90deg) rotateZ(90deg) scaleY(10) scaleZ(10);
+                }
+                99.9999% {
+                    transform: rotateX(360deg);
+                }
+                100% {
+                    transform: rotateX(0deg);
+                }
+            }
+
+            .phrase {
+                background-color: red;
+                display: block;
+                width: 200px;
+                height: 100px;
+                animation: rx360 10s infinite;
+                transform: rotateX(35deg) ;
+                transform-style: preserve-3d;
+            }
+
+            .mot {
+                background-color: green;
+                display: block;
+                width: 400px;
+                height: 300px;
+                transform: translateZ(-100px) translateX(-150px) translateY(-100px);
+                transform-style: preserve-3d;
+            }
+
+            .truc {
+                width: 90px;
+                transform: translateZ(200px) translateX(200px) translateY(100px);
+                background-color: turquoise;
+                transform-style: preserve-3d;
+            }
+
+            .fuck {
+                height: 30px;
+                background-color: white;
+                color: red;
+                transform: rotateX(-90deg) translateY(15px);
+            }
+
+            .you {
+                height: 30px;
+                background-color: white;
+                color: red;
+                transform: rotateX(-90deg) translateZ(-300px) translateY(15px);
+            }
+
+            .coucou {
+                height: 20px;
+                width: 60px;
+                background-color: white;
+                color: black;
+                font-size: 14px;
+                transform: rotateX(-90deg) rotateY(90deg) translateX(300px) translateY(10px) translateZ(100px);
+            }
+        </style>
+	</head>
+
+	<body>
+        <main>
+            <div class="perspective">
+
+                <div class="phrase">
+                    un
+                    <div class="mot">
+                        deux
+                        <div class="truc">
+                            trois
+                            <div class="fuck">
+                                je vais
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="you">
+                        dans les bois
+                    </div>
+
+                    <div class="coucou">
+                        coucou !
+                    </div>
+                </div>
+
+            </div>
+        </main>
+        <script>
+
+            window.onload = () => {
+
+            };
+        </script>
+	</body>
+	
+</html>

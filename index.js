@@ -34,8 +34,9 @@ class MenuDeroulant
 }
 
 window.onload = () => {
-
+    
     const body = document.body;
+    /**
     let menu_haut = document.createElement('header');
     menu_haut.classList.add('menu-fixe', 'txt-center');
 
@@ -51,7 +52,7 @@ window.onload = () => {
     menu_haut.innerHTML = md.toString();
 
     body.appendChild(menu_haut);
-
+    **/
     let main = document.createElement('main');
     main.classList.add('full', 'demo', 'bg-blue');
     body.appendChild(main);
