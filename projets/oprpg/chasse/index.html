@@ -11,6 +11,12 @@
 			.full {
 				--background-color: transparent;
 			}
+			.main {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				
+			}
 		</style>
 	</head>
 	<body>
@@ -18,6 +24,403 @@
 			<div class="retour" >
 				<a href="../index.html" class="btn">retour</a>
 			</div>
+			<main class="full main" id="main">
+			</main>
 		</div>
+		<script>
+			class Unite {
+                constructor(x, y) {
+                    this.x = x
+                    this.y = y
+                    this.deca_x = 0
+                    this.deca_y = 0
+                    this.dir_x = 0
+                    this.dir_y = 0
+                    this.cible_x = x
+                    this.cible_y = y
+                    this.vitesse = 2
+                    this.url = null
+                }
+
+                draw(ctx, imgs, CARRE) {
+                    const img = imgs[this.url]
+                    if (img !== false) {
+                        ctx.drawImage(
+                            img, this.x * CARRE + this.deca_x, 
+                            this.y * CARRE + this.deca_y, 
+                            CARRE, 
+                            CARRE
+                        )
+                    }
+                }
+
+                get bouge() {
+                    return this.dir_x !== 0 || this.dir_y !== 0
+                }
+            }
+
+            class Joueur extends Unite {
+                constructor() {
+                    super(25, 15)
+                    this.vitesse = 3
+                    this.keyboard = {
+                        'ArrowDown': false,
+                        'ArrowUp': false,
+                        'ArrowLeft': false,
+                        'ArrowRight': false
+                    }
+                    const touches = Object.keys(this.keyboard)
+                    document.addEventListener('keydown', e => {
+                        if (touches.includes(e.code)) {
+                            this.keyboard[e.code] = true
+                        }
+                    })
+                    document.addEventListener('keyup', e => {
+                        if (touches.includes(e.code)) {
+                            this.keyboard[e.code] = false
+                        }
+                    })
+                }
+
+                update(CARRE, ellapse) {
+                    if (this.cible_x === this.x && this.cible_y === this.y) {
+                        let lr = this.keyboard.ArrowLeft ? -1 : (this.keyboard.ArrowRight ? 1 : 0)
+                        let ud = this.dir_y = this.keyboard.ArrowUp ? -1 : (this.keyboard.ArrowDown ? 1 : 0)
+                        const cumul_x = this.cible_x + lr
+                        if (cumul_x < 0 || cumul_x > 25) {
+                            lr = 0
+                        }
+                        const cumul_y = ud + this.cible_y
+                        if (cumul_y < 0 || cumul_y > 15 || lr !== 0) {
+                            ud = 0
+                        }
+                        this.cible_x += lr
+                        this.cible_y += ud
+                        this.dir_x = lr
+                        this.dir_y = ud
+                    }
+                    this.deca_x += (this.dir_x * ellapse * this.vitesse * CARRE)
+                    this.deca_y += (this.dir_y * ellapse * this.vitesse * CARRE)
+                    const diff_x = (this.x * CARRE + this.deca_x) - (this.cible_x * CARRE)
+                    const diff_y = (this.y * CARRE + this.deca_y) - (this.cible_y * CARRE)
+                    if (Math.abs(diff_x) < 4) {
+                        this.x = this.cible_x
+                        this.deca_x = -(diff_x / 2)
+                    }
+                    if (Math.abs(diff_y) < 4) {
+                        this.y = this.cible_y
+                        this.deca_y = -(diff_y / 2)
+                    }
+                }
+
+            }
+
+            class Animal extends Unite {
+                constructor() {
+                    super(13, 8)
+                    this.vitesse = 4
+                    this.pause = 2
+                    this.niveau_alerte = 0
+                    this.distance_detection = 4
+                    this.pas = 1
+                    this.capture = false
+                    this.fuite = false
+                    this.proba_aleatoire = 25
+                    this.proba_rapprocher_min = 0
+                    this.proba_rapprocher_max = 15
+                    /*
+                    this.proba_eloigner_min = 65
+                    this.proba_eloigner_max = 80*/
+                }
+
+                update(CARRE, ellapse, perso) {
+                    if (!this.capture && !this.fuite) {
+
+                        const dst_detec = this.distance_detection * CARRE
+                        let dst = 2 * dst_detec
+                        let pas_loin = false
+                        if (perso.bouge) {
+                            const xpos = this.x * CARRE + this.deca_x
+                            const ypos = this.y * CARRE + this.deca_y
+                            const posx = perso.x * CARRE + perso.deca_x
+                            const posy = perso.y * CARRE + perso.deca_y
+                            dst = Math.sqrt((posx - xpos) ** 2 + (posy - ypos) ** 2)
+                            pas_loin = dst < dst_detec
+                        }
+                        if (pas_loin) {
+                            const r = (dst_detec - dst) / dst_detec
+                            const deca = ellapse * (150 + 50 * r)
+                            const alerte = this.niveau_alerte + deca
+                            this.niveau_alerte = Math.min(alerte, 100)
+
+                            this.pause *= (1 - (r / 6))
+                            if (dst < 8) {
+                                console.log('capturé')
+                                this.capture = true
+                            }
+                        } else {
+                            const deca = 50 * ellapse
+                            const alerte = this.niveau_alerte - deca
+                            this.niveau_alerte = Math.max(alerte, 0)
+                        }
+
+                        if (this.x === this.cible_x && this.y === this.cible_y) {
+                            // ne bouge pas
+                            if (this.pas <= 0) {
+                                if (this.pause > 0) {
+                                    this.pause -= ellapse
+                                    this.dir_x = 0
+                                    this.dir_y = 0
+                                    this.deca_x = 0
+                                    this.deca_y = 0
+                                } else {
+                                    let alea = Math.trunc(this.niveau_alerte / 15)
+                                    this.pas = Math.trunc(Math.random() * 2) + alea
+                                    // entre 0-3 au repos
+                                    // entre 0 et 1 actif
+                                    this.pause = (3 * Math.random()) - (this.niveau_alerte * 2 / 100)
+                                }
+                            } else {
+                                // bouge
+                                this.pas--
+                                // on bouge sans attendre
+                                const rng = Math.random() * 100
+                                let dx = 0
+                                let dy = 0
+                                if (rng > 100 - this.proba_aleatoire) {
+                                    // 20% aleatoire
+                                    dx = (Math.random() < 0.5 ? -1 : 1)
+                                    dy = (Math.random() < 0.5 ? -1 : 1)
+                                } else {
+                                    // 80% éloigner / rapprocher
+                                    if (this.x !== perso.x) {
+                                        dx = (this.x - perso.x) / Math.abs(this.x - perso.x)
+                                    }
+                                    if (this.y !== perso.y) {
+                                        dy = (this.y - perso.y) / Math.abs(this.y - perso.y)
+                                    }
+                                    const cumul_proba = this.proba_rapprocher_max - this.proba_rapprocher_min
+                                    const proba_rapprocher = ((100 - this.niveau_alerte) * cumul_proba / 100) 
+                                    + this.proba_rapprocher_min
+                                    if (rng < proba_rapprocher) {
+                                        dx *= -1
+                                        dy *= -1
+                                    }
+                                }
+                                if (Math.random() < 0.5) {
+                                    this.dir_x = dx
+                                    this.dir_y = 0
+                                } else {
+                                    this.dir_y = dy
+                                    this.dir_x = 0
+                                }
+                                this.cible_y = this.y + this.dir_y
+                                this.cible_x = this.x + this.dir_x
+                                if (this.x < 0 || this.y < 0 || this.x > 25 || this.y > 15) {
+                                    this.fuite = true
+                                    console.log('fuite')
+                                }
+
+                            } // fin else pas > 0
+                        } 
+                        
+                        this.deca_x += (this.dir_x * ellapse * this.vitesse * CARRE)
+                        this.deca_y += (this.dir_y * ellapse * this.vitesse * CARRE)
+                        const diff_x = (this.x * CARRE + this.deca_x) - (this.cible_x * CARRE)
+                        const diff_y = (this.y * CARRE + this.deca_y) - (this.cible_y * CARRE)
+                        if (Math.abs(diff_x) < CARRE / 6) {
+                            this.x = this.cible_x
+                            this.deca_x = -(diff_x / 2)
+                        }
+                        if (Math.abs(diff_y) < CARRE / 6) {
+                            this.y = this.cible_y
+                            this.deca_y = -(diff_y / 2)
+                        }
+                    }
+                }
+
+                draw(ctx, imgs, CARRE) {
+                    if (!this.capture && !this.fuite) {
+                        super.draw(ctx, imgs, CARRE)
+                        const msg = '!'.repeat(Math.trunc(this.niveau_alerte / 20))
+                        ctx.font = 'bold 1rem Komika Display'
+                        ctx.textAlign = 'center';
+                        ctx.fillText(msg, 
+                        this.x * CARRE + this.deca_x + CARRE / 2, 
+                        this.y * CARRE + this.deca_y - CARRE / 3)
+                    }
+                }
+
+            }
+
+            class Terrain {
+                constructor(tiles) {
+                    this.tiles = [
+                        { sx: 0, sy: 0, passable: true },
+                        { sx: 48, sy: 0, passable: true },
+                        { sx: 96, sy: 0, passable: true },
+                        { sx: 144, sy: 0, passable: false }
+                    ]
+                    this.map = []
+                    for (let i = 0; i < 26; i++) {
+                        let ligne = []
+                        for (let j = 0; j < 16; j++) {
+                            if (Math.random() > 0.95) {
+                                const val = Math.trunc(Math.random() * 4)
+                                ligne.push(val)
+                            } else {
+                                ligne.push(0)
+                            }
+                        }
+                        this.map.push(ligne)
+                    }
+                }
+
+                draw(ctx, tiles, CARRE) {
+                    const map = this.map
+                    const prop_tiles = this.tiles
+                    if (tiles !== false) {
+                        for (let i = 0; i < map.length; i++) {
+                            const ligne = map[i]
+                            for (let j = 0; j < ligne.length; j++) {
+                                const val = map[i][j]
+                                ctx.drawImage(
+                                    tiles, 
+                                    prop_tiles[val].sx, 
+                                    prop_tiles[val].sy, 
+                                    48, 
+                                    48, 
+                                    i * CARRE, 
+                                    j * CARRE, 
+                                    CARRE, 
+                                    CARRE
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+            class Game {
+                constructor(main) {
+                    this.main = main
+                    this.CARRE = 48
+                    this.terrain = new Terrain()
+                    this.images = []
+                    this.animaux = []
+                    this.perso = null
+                    this.run_canvas = null
+                    this.ctx = null
+                    this.last = null
+                }
+
+                init() {
+                    const images = {
+                        perso: '../assets/img/avatars/luffy/luffy.png',
+                        fafa: '../assets/img/test/anguille_tueuse.jpg',
+                        tiles: '../assets/img/test/chasse.webp'
+                    }
+                    const self = this
+                    Object.entries(images).map(tab => {
+                        const key = tab[0]
+                        const url = tab[1]
+                        self.addImg(url, key)
+                    })
+                    this.canvas = document.createElement('canvas')
+                    this.canvas.width = '1248'
+                    this.canvas.height = '768'
+                    this.canvas.classList.add('page')
+                    this.canvas.style.width = '1248px'
+                    this.canvas.style.height = '768px'
+                    this.main.appendChild(this.canvas)
+                    this.ctx = this.canvas.getContext('2d')
+
+                    this.perso = new Joueur()
+                    this.perso.url = 'perso'
+
+                    const animal = new Animal()
+                    animal.url = 'fafa'
+                    this.animaux.push(animal)
+                }
+
+                start(self = null) {
+                    if (self === null) {
+                        self = this
+                    }
+                    this.last = Date.now()
+                    if (self.images.filter(img => img === false).length === 0) {
+                        self.run_canvas = window.requestAnimationFrame(() => self.run(self))
+                    } else {
+                        self.run_canvas = window.requestAnimationFrame(() => self.start(self))
+                    }
+                }
+
+                run(self = null) {
+                    const CARRE = self.CARRE
+                    const ctx = self.ctx
+                    ctx.clearRect(0, 0, self.canvas.width, self.canvas.height)
+                    const current = Date.now()
+                    const temps = (current - self.last)
+                    const ellapse = temps / 1000
+
+                    
+                    // maj perso
+                    self.perso.update(CARRE, ellapse)
+
+                    // maj des animaux
+                    self.animaux.forEach(animal => {
+                        animal.update(CARRE, ellapse, self.perso)
+                    })
+
+                    // dessiner le terrain
+                    self.terrain.draw(ctx, self.images['tiles'], CARRE)
+
+                    // dessiner les animaux
+                    self.animaux.forEach(animal => {
+                        animal.draw(ctx, self.images, CARRE)
+                        if (animal.capture) {
+                            ctx.font = 'bold 2rem Komika Display'
+                            ctx.fillText('Bravo ! Vous avez capturé une [anguille géante] !', 13 * CARRE, 3 * CARRE, 20 * CARRE)
+                        }
+                        if (animal.fuite) {
+                            ctx.font = 'bold 2rem Komika Display'
+                            ctx.fillText('[anguille géante] a pris la fuite', 13 * CARRE, 3 * CARRE, 20 * CARRE)
+                        }
+                    })
+
+                    // dessiner le joueur
+                    self.perso.draw(ctx, self.images, CARRE)
+
+                    self.last = current
+                    self.run_canvas = window.requestAnimationFrame(() => self.run(self))
+                }
+
+                async loadImg(url) {
+                    return new Promise((resolve, reject) => {
+                        const img = document.createElement('img')
+                        img.onload = () => resolve(img)
+                        img.onerror = reject
+                        img.src = url
+                    })
+                }
+
+                async addImg(url, key) {
+                    this.images[key] = false
+                    const self = this
+                    return this.loadImg(url).then(img => {
+                        self.images[key] = img
+                        return img
+                    })
+                }
+
+            }
+
+			window.addEventListener('load', e => {
+                const main = document.getElementById('main')
+                const game = new Game(main)
+                game.init()
+                game.start(game)
+            });
+		</script>
 	</body>
 </html>

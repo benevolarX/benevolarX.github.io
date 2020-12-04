@@ -7,25 +7,26 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
 		<link media="all" rel="stylesheet" href="../assets/css/b-css.min.css" />
 		<link media="all" rel="stylesheet" href="../assets/css/classic.css" />
-		
+		<style>
+			.blur {
+				webkit-filter: blur(5px);
+				filter: blur(5px);
+			}
+		</style>
 	</head>
 	<body>
-		<div class="full flex">
+		<div id="main" class="full flex">
 			<div class="retour" >
 				<a href="../index.html" class="btn">retour</a>
 			</div>
 			<div class="bg-blue"><br/><br/>hello<br/></div>
-			<canvas class="bg-red" id="jeu" width="1280" height="960"></canvas>
+			<!-- <canvas class="bg-red" id="jeu" width="1280" height="960"></canvas> -->
 		</div>
 		<script>
-			function draw(img) {
-				let canvas = document.getElementById("jeu");
+			function draw(img, canvas) {
+				//img.filter = 'blur(20px)';
 				let ctx = canvas.getContext("2d");
 				ctx.clearRect(0, 0, canvas.width, canvas.height);
-				let w = img.width;
-				let h = img.height;
-				console.log(`image : ${w} x ${h} !`);
-
 				let pw = canvas.clientWidth;
 				let ph = canvas.clientHeight;
 				canvas.width = pw;
@@ -40,10 +41,19 @@
 				ctx.drawImage(img, nx, ny, nw, nh);
 			}
 			window.onload = function() {
-				let img = new Image();
-				img.src = "../assets/img/test/full-screen.png";
-				img.onload = () => draw(img);
-				window.onresize = () => draw(img);
+				let canvas = document.createElement('canvas');
+				canvas.id = 'jeu';/*
+				canvas.width = 1280;
+				canvas.height = 960;*/
+				const main = document.getElementById('main');
+				main.appendChild(canvas);
+				let img = document.createElement('img');
+				console.log(img);
+				// C:\Users\victor\Documents\perso\oprpg-v4\public\assets\img\iles
+				// C:\Users\victor\Documents\perso\benevolarX.github.io\projets\oprpg\full-screen
+				img.src = "../../../../oprpg-v4/public/assets/img/iles/drum1248x768.jpg";
+				img.onload = () => draw(img, canvas);
+				window.onresize = () => draw(img, canvas);
 			};
 		</script>
 	</body>
