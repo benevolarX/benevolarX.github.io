@@ -401,11 +401,12 @@
                     self.animaux.forEach(animal => {
                         animal.draw(ctx, self.images, CARRE)
                         if (animal.capture) {
-                            ctx.font = 'bold 2rem Komika Display'
+                            ctx.font = 'bold 2rem Komika Display, Georgia, Trebuchet MS, Arial, Serif'
                             ctx.fillText('Bravo ! Vous avez capturé une [anguille géante] !', 13 * CARRE, 3 * CARRE, 20 * CARRE)
                         }
                         if (animal.fuite) {
-                            ctx.font = 'bold 2rem Komika Display'
+						
+                            ctx.font = 'bold 2rem Komika Display, Georgia, Trebuchet MS, Arial, Serif'
                             ctx.fillText('[anguille géante] a pris la fuite', 13 * CARRE, 3 * CARRE, 20 * CARRE)
                         }
                     })
@@ -442,6 +443,7 @@
                 const game = new Game(main)
                 game.init()
                 game.start(game)
+				
             });
 		</script>
 	</body>
