@@ -29,6 +29,7 @@
 		<div class="full">
 			<div class="retour" >
 				<a href="../index.html" class="btn">retour</a>
+                <button id="full-screen">full screen</button>
 			</div>
 			<main class="full main" id="main">
 				<div>
@@ -447,6 +448,16 @@
             }
 
 			window.addEventListener('load', e => {
+                const btn = document.getElementById('full-screen')
+				let full = false;
+				btn.onclick = () => {
+					if (!full) {
+						document.body.requestFullscreen();
+					} else {
+						document.exitFullscreen();
+					}
+                    full = !full
+				}
                 const main = document.getElementById('main')
                 const resize = (elem, w, h) => {
                     const maxw = document.body.clientWidth
