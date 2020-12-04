@@ -7,6 +7,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
 		<link media="all" rel="stylesheet" href="../assets/css/b-css.min.css" />
 		<link media="all" rel="stylesheet" href="../assets/css/classic.css" />
+		<script async src="../assets/js/html/virtual-joystick.js"></script>
 		<style>
 			.full {
 				--background-color: transparent;
@@ -47,6 +48,8 @@
 						</p>
 					</details>
 				</div>
+                <virtual-joystick class="stick" size-block='150' size-stick='90' color-stick='rgb(0, 118, 168)' color-stick-hover='rgb(0, 162, 232)' >
+                </virtual-joystick>
 			</main>
 		</div>
 		<script>
@@ -91,6 +94,7 @@
                         'ArrowLeft': false,
                         'ArrowRight': false
                     }
+                    this.stick = document.querySelector('virtual-joystick');
                     const touches = Object.keys(this.keyboard)
                     document.addEventListener('keydown', e => {
                         if (touches.includes(e.code)) {
@@ -108,6 +112,10 @@
                     if (this.cible_x === this.x && this.cible_y === this.y) {
                         let lr = this.keyboard.ArrowLeft ? -1 : (this.keyboard.ArrowRight ? 1 : 0)
                         let ud = this.dir_y = this.keyboard.ArrowUp ? -1 : (this.keyboard.ArrowDown ? 1 : 0)
+                        if (lr === 0 && ud === 0) {
+                            lr = this.stick.is_right ? 1 : (this.stick.is_left ? -1 : 0);
+                            ud = this.stick.is_up ? -1 : (this.stick.is_down ? 1 : 0);
+                        }
                         const cumul_x = this.cible_x + lr
                         if (cumul_x < 0 || cumul_x > 25) {
                             lr = 0
@@ -440,10 +448,30 @@
 
 			window.addEventListener('load', e => {
                 const main = document.getElementById('main')
+                const resize = (elem, w, h) => {
+                    const maxw = document.body.clientWidth
+                    const maxh = document.body.clientHeight
+                    const ratioH = maxh / h
+                    const widthH = ratioH * w
+                    let ratioW = 1.0
+                    if (widthH > maxw) {
+                        ratioW = maxw / widthH
+                    }
+                    const ratioTotal = ratioH * ratioW
+                    const nw = w * ratioTotal
+                    const nh = h * ratioTotal
+                    elem.style.minWidth = `${nw}px`
+                    elem.style.minHeight = `${nh}px`
+                    elem.style.maxWidth = `${nw}px`
+                    elem.style.maxHeight = `${nh}px`
+                }
+                window.addEventListener('resize', e => {
+                    resize(game.canvas, 1248, 768)
+                })
                 const game = new Game(main)
                 game.init()
+                resize(game.canvas, 1248, 768)
                 game.start(game)
-				
             });
 		</script>
 	</body>
