@@ -25,12 +25,12 @@ body
 
 .stick /** canvas stick **/
 {
-    width: 150px;
-    height: 150px;
+    width: clamp(50px, 100px, 150px);
+    height: clamp(50px, 100px, 150px);
     float: left;
     position: absolute;
-    bottom: calc(0px + 150px + 10%);
-    left: calc(0px + 10%);
+    bottom: calc(20vh + 2vw);
+    left: calc(10vh + 2vw);
     --background-color: transparent;
 }
 
