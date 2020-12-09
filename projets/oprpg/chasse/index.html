@@ -147,8 +147,9 @@
             }
 
             class Animal extends Unite {
-                constructor() {
-                    super(13, 8)
+                constructor(nom) {
+                    super(Math.trunc(Math.random() * 8) + 5, Math.trunc(Math.random() * 5) + 4)
+                    this.nom = nom
                     this.vitesse = 4
                     this.pause = 2
                     this.niveau_alerte = 0
@@ -162,6 +163,7 @@
                     /*
                     this.proba_eloigner_min = 65
                     this.proba_eloigner_max = 80*/
+                    this.tmp_msg = 2500
                 }
 
                 update(CARRE, ellapse, perso) {
@@ -349,7 +351,8 @@
                     const images = {
                         perso: '../assets/img/avatars/luffy/luffy.png',
                         fafa: '../assets/img/test/anguille_tueuse.jpg',
-                        tiles: '../assets/img/test/chasse.webp'
+                        tiles: '../assets/img/test/chasse.webp',
+                        guepard: '../assets/img/test/guepard.jpg'
                     }
                     const self = this
                     Object.entries(images).map(tab => {
@@ -369,9 +372,13 @@
                     this.perso = new Joueur()
                     this.perso.url = 'perso'
 
-                    const animal = new Animal()
-                    animal.url = 'fafa'
-                    this.animaux.push(animal)
+                    const anguille = new Animal('anguille géante')
+                    anguille.url = 'fafa'
+                    this.animaux.push(anguille)
+                    
+                    const guepard = new Animal('guépard')
+                    guepard.url = 'guepard'
+                    this.animaux.push(guepard)
                 }
 
                 start(self = null) {
@@ -409,14 +416,17 @@
                     // dessiner les animaux
                     self.animaux.forEach(animal => {
                         animal.draw(ctx, self.images, CARRE)
-                        if (animal.capture) {
-                            ctx.font = 'bold 2rem Komika Display, Georgia, Trebuchet MS, Arial, Serif'
-                            ctx.fillText('Bravo ! Vous avez capturé une [anguille géante] !', 13 * CARRE, 3 * CARRE, 20 * CARRE)
-                        }
-                        if (animal.fuite) {
-						
-                            ctx.font = 'bold 2rem Komika Display, Georgia, Trebuchet MS, Arial, Serif'
-                            ctx.fillText('[anguille géante] a pris la fuite', 13 * CARRE, 3 * CARRE, 20 * CARRE)
+                        if (animal.tmp_msg > 0) {
+                            if (animal.capture) {
+                                ctx.font = 'bold 2rem Komika Display, Georgia, Trebuchet MS, Arial, Serif'
+                                ctx.fillText(`Bravo ! Vous avez capturé une [${animal.nom}] !`, 13 * CARRE, 3 * CARRE, 20 * CARRE)
+                                animal.tmp_msg -= temps
+                            }
+                            if (animal.fuite) {
+                                ctx.font = 'bold 2rem Komika Display, Georgia, Trebuchet MS, Arial, Serif'
+                                ctx.fillText(`[${animal.nom}] a pris la fuite`, 13 * CARRE, 3 * CARRE, 20 * CARRE)
+                                animal.tmp_msg -= temps
+                            }
                         }
                     })
 
