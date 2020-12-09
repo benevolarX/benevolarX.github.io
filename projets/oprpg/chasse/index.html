@@ -34,10 +34,10 @@
 			<main class="full main" id="main">
 				<div>
 					<details class="max-50">
-						<summary>cliquez ici pour afficher les infos (et à nouveau pour masquer) </summary>
+						<summary>cliquez ici pour afficher/maquer les infos (METTEZ LE MODE PAYSAGE SVP) </summary>
 						<p>
 						Cette version est un test (fonctionne uniquement sur pc 1248px x 768px mini pour le moment)<br/>
-						Touches fléchées pour se déplacer.<br/>
+						Touches fléchées / stick pour se déplacer.<br/>
 						L'animal se déplace automatiquement.<br/>
 						Lorsque vous vous rapprochez, vous verrez des <span>!<span> sur sa tête.<br/>
 						Plus il y a de !, plus vite l'animal fuit.<br/>
@@ -208,7 +208,7 @@
                                     this.deca_y = 0
                                 } else {
                                     let alea = Math.trunc(this.niveau_alerte / 15)
-                                    this.pas = Math.trunc(Math.random() * 2) + alea
+                                    this.pas = Math.trunc(Math.random() * 2 + (alea / 2))
                                     // entre 0-3 au repos
                                     // entre 0 et 1 actif
                                     this.pause = (3 * Math.random()) - (this.niveau_alerte * 2 / 100)
