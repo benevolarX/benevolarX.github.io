@@ -7,7 +7,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
 		<link media="all" rel="stylesheet" href="../assets/css/b-css.min.css" />
 		<link media="all" rel="stylesheet" href="../assets/css/classic.css" />
-		<script async src="../assets/js/html/virtual-joystick.js"></script>
+		<script async src="../assets/js/html/op-joystick.js"></script>
 		<style>
 			.full {
 				--background-color: transparent;
@@ -49,8 +49,8 @@
 						</p>
 					</details>
 				</div>
-                <virtual-joystick class="stick" size-block='150' size-stick='90' color-stick='rgb(0, 118, 168)' color-stick-hover='rgb(0, 162, 232)' >
-                </virtual-joystick>
+                <op-joystick class="stick" size-block='150' size-stick='90' color-stick='rgb(0, 118, 168)' color-stick-hover='rgb(0, 162, 232)' >
+                </op-joystick>
 			</main>
 		</div>
 		<script>
@@ -98,7 +98,7 @@
                         'ArrowLeft': false,
                         'ArrowRight': false
                     }
-                    this.stick = document.querySelector('virtual-joystick');
+                    this.stick = document.querySelector('op-joystick');
                     const touches = Object.keys(this.keyboard)
                     document.addEventListener('keydown', e => {
                         if (touches.includes(e.code)) {
@@ -117,8 +117,8 @@
                         let lr = this.keyboard.ArrowLeft ? -1 : (this.keyboard.ArrowRight ? 1 : 0)
                         let ud = this.dir_y = this.keyboard.ArrowUp ? -1 : (this.keyboard.ArrowDown ? 1 : 0)
                         if (lr === 0 && ud === 0) {
-                            lr = this.stick.is_right ? 1 : (this.stick.is_left ? -1 : 0);
-                            ud = this.stick.is_up ? -1 : (this.stick.is_down ? 1 : 0);
+                            lr = this.stick.isRight ? 1 : (this.stick.isLeft ? -1 : 0);
+                            ud = this.stick.isUp ? -1 : (this.stick.isDown ? 1 : 0);
                         }
                         const cumul_x = this.cible_x + lr
                         if (cumul_x < 0 || cumul_x > 25) {
@@ -144,6 +144,12 @@
                     if (Math.abs(diff_y) < 4) {
                         this.y = this.cible_y
                         this.deca_y = -(diff_y / 2)
+                    }
+                    if (Math.abs(this.deca_x) > CARRE || Math.abs(this.deca_y) > CARRE) {
+                        this.x = this.cible_x
+                        this.y = this.cible_y
+                        this.deca_x = 0
+                        this.deca_y = 0
                     }
                 }
 
@@ -492,8 +498,8 @@
 				}
                 const main = document.getElementById('main')
                 const resize = (elem, w, h) => {
-                    const maxw = document.body.clientWidth
-                    const maxh = document.body.clientHeight
+                    const maxw = document.documentElement.clientWidth
+                    const maxh = document.documentElement.clientHeight
                     const ratioH = maxh / h
                     const widthH = ratioH * w
                     let ratioW = 1.0
