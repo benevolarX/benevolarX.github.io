@@ -1,0 +1,115 @@
+button:not([disabled]), .clic {
+  cursor: pointer;
+}
+
+.select {
+  border: dashed red;
+}
+.full {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.combat {
+  /*
+  min-width: 1248px;
+  min-height: 768px;*/
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-image: url('../assets/img/test/amazon_lily.webp');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.competences {
+  min-height: 50%;
+  background-color: transparent;
+  visibility: hidden;
+}
+.competence-liste {
+  min-height: 336px;
+  display: flex;
+  flex-direction: row;
+}
+.competences-form {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+.annuler-attaque {
+  min-width: 100px;
+  min-height: 40px;
+  color: red;
+}
+.valider-attaque {
+  min-width: 100px;
+  min-height: 40px;
+  color: green;
+}
+.competence {
+  min-width: 300px;
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border-image: url('../assets/img/test/cadre_rose.png') round;
+  border-image-slice: calc(1/3 * 100%) calc(1/3 * 100%) fill;
+  border-image-width: 33px 33px;
+  border-image-repeat: stretch;
+  border-image-outset: 22px;
+  margin: 40px;
+}
+.atk-select {
+  border-image: url('../assets/img/test/cadre_bleu.png') round;
+  border-image-slice: calc(1/3 * 100%) calc(1/3 * 100%) fill;
+  border-image-width: 33px 33px;
+  border-image-repeat: stretch;
+  border-image-outset: 22px;
+  margin: 40px;
+}
+.camp {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  min-height: 192px;
+  min-width: 1248px;
+}
+.combattant {
+  text-align: center;
+}
+
+.adversaires {
+  flex-direction: row-reverse;
+}
+.allies {
+}
+
+progress {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 120px;
+  height: 15px;
+}
+progress[value]::-webkit-progress-bar {
+  background-color: #eee;
+  border-radius: 2px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25) inset;
+}
+progress[value]::-webkit-progress-value {
+  background-color: rgb(100, 150, 250);
+  border-radius: 2px; 
+  background-size: 35px 20px, 100% 100%, 100% 100%;
+}
+progress::before {
+  content: attr(value);
+}
+progress::after {
+  content: attr(max);
+}
