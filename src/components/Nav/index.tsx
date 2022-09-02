@@ -6,10 +6,10 @@ function Nav() {
 			<a class={Styles.logolink} href="/">
 				<div class={Styles.monogram}>JW</div>
 			</a>
-			<a class={Styles.link} href="./projects">
+			<a class={Styles.link} href="/projects">
 				Portfolio
 			</a>
-			<a class={Styles.link} href="./about">
+			<a class={Styles.link} href="/about">
 				About
 			</a>
 			<a class={Styles.social} href="https://twitter.com/me">
