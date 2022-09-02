@@ -7,7 +7,7 @@ import Nav from '../components/Nav/index.jsx';
 const { content } = Astro.props;
 ---
 
-<html lang={content.lang || 'en'}>
+<html lang={content.lang || 'fr'}>
 	<head>
 		<MainHead title={content.title} description={content.description} />
 		<style lang="scss">
@@ -74,7 +74,7 @@ const { content } = Astro.props;
 		</header>
 		<div class="leadIn">
 			<div class="wrapper pt8 pb8 mb8 tac">
-				{content.tags.map((t) => <span class="tag">{t}</span>)}
+				{content.tags.map((t: string) => <span class="tag">{t}</span>)}
 				<h3 class="tagline">{content.description}</h3>
 			</div>
 		</div>
@@ -83,7 +83,7 @@ const { content } = Astro.props;
 		</div>
 		<footer class="tac mt6">
 			<a href="/projects">
-				<Button>View More</Button>
+				<Button>Voir plus</Button>
 			</a>
 		</footer>
 		<Footer />
