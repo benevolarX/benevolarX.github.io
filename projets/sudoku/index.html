@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="fr">
+   <head>
+      <meta charset="UTF-8">
+      <title>sokudo solver</title>
+      <style>
+         *, *:after, *:before {
+            box-sizing: border-box;
+         }
+         
+         table {
+            border-collapse: collapse;
+            border: solid 4px black;
+         }
+
+         td {
+            max-width: 60px;
+            width: 60px;
+            height: 60px;
+            text-align: center;
+            border: ridge rgb(131, 199, 255);
+         }
+
+         input[type=number] {
+            width: 40px;
+            height: 40px;
+            border: none;
+            font-size: 2rem;
+            text-align: center;
+         }
+
+         /* Chrome, Safari, Edge, Opera */
+         input::-webkit-outer-spin-button,
+         input::-webkit-inner-spin-button, 
+         input[type=number] {
+            -webkit-appearance: none;
+            -moz-appearance: textfield;
+         }
+
+         tr:nth-child(3n) {
+            border-bottom: solid black;
+         }
+
+         tr:first-child {
+            border-top: solid black;
+         }
+
+         td:first-child {
+            border-left: solid black;
+         }
+
+         td:nth-child(3n) {
+            border-right: solid black;
+         }
+
+         
+      </style>
+   </head>
+   <body>
+      <main id='main'>
+
+      </main>
+   </body>
+   <script type="module" >
+
+      const LIGNE = 0;
+      const COLONE = 1;
+      const CARRE = 2;
+      const CHIFFRES = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+      class Nombre {
+         
+         constructor(n) {
+            this.val = n;
+            this.liens = [[], [], []]; // ligne, colone, carre
+         }
+
+         get Nombre() {
+            return Number(this.val);
+         }
+
+         add(n, ou = LIGNE) {
+            if (n !== this && (ou === LIGNE || ou === COLONE || ou === CARRE) && ! this.liens[ou].includes(n)) {
+               this.liens[ou].push(n);
+            }
+         }
+
+         get possibilites() {
+            if (this.val !== 0) {
+               return [this.val];
+            }
+            let rep = CHIFFRES;
+            this.liens.forEach((lien, i) => {
+               lien.forEach(n => {
+                  const val = n.Nombre;
+                  if (val !== 0) {
+                     rep = rep.filter(v => v !== val);
+                  }
+               })
+            });
+            return rep;
+         }
+
+         complex(n = 2) {
+            let rep = this.possibilites;
+            if (rep.length === n) {
+               this.liens.forEach((lien, i) => {
+                  let autre = [];
+                  lien.forEach(n => {
+                     const val = n.Nombre;
+                     if (val === 0) {
+                        let cote = n.possibilites;
+                        autre = autre.concat(cote.filter(c => ! autre.includes(c)));
+                     }
+                  });
+                  let only_one = rep.filter(c => ! autre.includes(c));
+                  if (only_one.length === 1) {
+                     return only_one;
+                  }
+               });
+            }
+            return rep;
+         }
+
+      }
+
+      class Sudoku {
+
+         copy() {
+            let g = [];
+            for (let i = 0; i < 9; i++) {
+               let ligne = [];
+               for (let j = 0; j < 9; j++) {
+                  ligne.push(this.getElem(i, j));
+               }
+               g.push(ligne);
+            }
+            return new Sudoku(g);
+         }
+
+         constructor(grille) {
+            this.grille = [];
+            for (let i = 0; i < 9; i++) {
+               let ligne = [];
+               for (let j = 0; j < 9; j++) {
+                  const n = Number(grille[i][j]);
+                  ligne.push(new Nombre(n));
+               }
+               this.grille.push(ligne);
+            }
+
+            this.liens = [[], [], [[],[],[],[],[],[],[],[],[]]];
+            for (let i = 0; i < 9; i++) {
+               let ligne = [];
+               let colone = [];
+               const ci = (i - (i % 3)) / 3;
+               for (let j = 0; j < 9; j++) {
+                  ligne.push(this.grille[i][j]);
+                  colone.push(this.grille[j][i]);
+                  const cj = (j - (j % 3)) / 3;
+                  const index = parseInt(`${ci}${cj}`, 3);
+                  this.liens[CARRE][index].push(this.grille[j][i]);
+               }
+               this.liens[LIGNE].push(ligne);
+               this.liens[COLONE].push(colone);
+            }
+            this.liens.forEach((lignes, i) => {
+               lignes.forEach(ligne => {
+                  ligne.forEach(n => {
+                     ligne.forEach(m => {
+                        if (n !== m) {
+                           n.add(m, i);
+                        }
+                     })
+                  })
+               });
+            });
+
+         }
+
+         get Incomplet() {
+            for (let i = 0; i < 9; i++) {
+               for (let j = 0; j < 9; j++) {
+                  if (this.getElem(i, j) === 0) {
+                     return true;
+                  }
+               }
+            }
+            return false;
+         }
+
+         resoudre(complexite = 3) {
+
+               let modif = true;
+               while (modif) {
+                  modif = false;
+                  this.liens.forEach((lignes, i) => {
+                     lignes.forEach(ligne => {
+                        ligne.forEach(n => {
+                           if (n.Nombre === 0) {
+                              const p = n.possibilites;
+                              if (p.length === 1) {
+                                 n.val = p[0];
+                                 modif = true;
+                              }
+                           }
+                        })
+                     });
+                  });
+               }
+
+               if (this.Incomplet) {
+               
+                  for (let taille = 2; taille < 4; taille ++) {
+                     this.liens.forEach((lignes, i) => {
+                        lignes.forEach((ligne, j) => {
+                           ligne.forEach((n, k) => {
+                              if (n.Nombre === 0) {
+                                 
+                                 const p = n.complex(taille);
+                                 if (p.length === 1) {
+                                    n.val = p[0];
+                                 }
+                                 else {
+                                    if (p.length === 2 && complexite > 0) {
+                                       for (let b = 0; b < p.length; b++) {
+                                          let cp = this.copy();
+                                          cp.liens[i][j][k].val = p[b];
+                                          cp.resoudre(complexite - 1);
+                                          if (!cp.Incomplet) {
+                                             this.grille = cp.grille;
+                                             return;
+                                          }
+                                       }
+                                    }
+                                 }
+      
+                              }
+                           })
+                        });
+                     });
+                  }
+
+               }
+
+         }
+
+         getElem(i, j) {
+            return this.grille[i][j].Nombre;
+         }
+
+      }
+      
+      window.onload = () => {
+
+         let zero = [
+            [0, 0, 0,   0, 0, 0,    0, 0, 0],
+            [0, 0, 0,   0, 0, 0,    0, 0, 0],
+            [0, 0, 0,   0, 0, 0,    0, 0, 0],
+
+            [0, 0, 0,   0, 0, 0,    0, 0, 0],
+            [0, 0, 0,   0, 0, 0,    0, 0, 0],
+            [0, 0, 0,   0, 0, 0,    0, 0, 0],
+
+            [0, 0, 0,   0, 0, 0,    0, 0, 0],
+            [0, 0, 0,   0, 0, 0,    0, 0, 0],
+            [0, 0, 0,   0, 0, 0,    0, 0, 0]
+         ];
+
+         let custum = [
+            [1, 2, 3,   4, 5, 6,    7, 8, 9],
+            [4, 5, 6,   0, 0, 0,    0, 0, 0],
+            [7, 8, 9,   0, 0, 0,    0, 0, 0],
+
+            [2, 0, 0,   0, 0, 0,    0, 0, 0],
+            [8, 0, 0,   0, 0, 0,    0, 0, 0],
+            [6, 0, 0,   0, 0, 0,    0, 0, 0],
+
+            [3, 0, 0,   0, 0, 0,    0, 0, 0],
+            [5, 0, 0,   0, 0, 0,    0, 0, 0],
+            [9, 0, 0,   0, 0, 0,    0, 0, 0]
+         ];
+
+         let expert = [
+            [0, 0, 1,   6, 3, 0,    0, 8, 0],
+            [0, 0, 0,   7, 0, 0,    0, 0, 1],
+            [5, 0, 0,   0, 0, 0,    3, 0, 4],
+
+            [0, 0, 0,   0, 1, 9,    0, 0, 0],
+            [1, 0, 7,   0, 0, 0,    2, 0, 8],
+            [0, 0, 0,   8, 7, 0,    0, 0, 0],
+
+            [2, 0, 4,   0, 0, 0,    0, 0, 5],
+            [7, 0, 0,   0, 0, 5,    0, 0, 0],
+            [0, 1, 0,   0, 2, 3,    4, 0, 0]
+         ]
+
+         let grille = [
+            [0, 0, 3,   0, 7, 4,    0, 0, 0],
+            [0, 0, 7,   1, 0, 0,    0, 0, 9],
+            [0, 2, 9,   0, 8, 5,    7, 6, 0],
+
+            [0, 0, 0,   0, 1, 2,    0, 9, 8],
+            [0, 3, 0,   0, 0, 0,    0, 2, 0],
+            [9, 1, 0,   8, 6, 0,    0, 0, 0],
+
+            [0, 4, 6,   2, 9, 0,    5, 1, 0],
+            [5, 0, 0,   0, 0, 7,    2, 0, 0],
+            [0, 0, 0,   6, 5, 0,    9, 0, 0]
+         ];
+
+         let sudoku = new Sudoku(expert);
+
+         let table = document.createElement('table');
+         for (let i = 0; i < 9; i++) {
+            let tr = document.createElement('tr');
+            for (let j = 0; j < 9; j++) {
+               let td = document.createElement('td');
+               let input = document.createElement('input');
+               input.type = 'number';
+               input.maxLength = 1;
+               input.pattern = '^[1-9]$';
+               input.min = 1;
+               input.max = 9;
+               input.id = `${i}@${j}`;
+               let val = sudoku.getElem(i, j);
+               if (val !== 0) {
+                  input.value = val;
+                  input.disabled = true;
+               }
+               
+               input.addEventListener('focus', () => input.select());
+               input.addEventListener('keydown', e => {
+                  let n = Number(parseInt(e.key, 10));
+                  if (Number.isNaN(n) || n < 1 || n > 9) {
+                     e.preventDefault();
+                     if (n === 0) {
+                        input.value = null;
+                        return;
+                     }
+                     if (e.key.match('^Arrow.*$') !== null) {
+                        let mi = i;
+                        let mj = j;
+                        if (e.key === 'ArrowRight') {
+                           mj++;
+                        }
+                        if (e.key === 'ArrowLeft') {
+                           mj--;
+                        }
+                        if (e.key === 'ArrowUp') {
+                           mi--;
+                        }
+                        if (e.key === 'ArrowDown') {
+                           mi++;
+                        }
+                        let nv = document.getElementById(`${mi}@${mj}`);
+                        if (nv !== null) {
+                           nv.focus();
+                           nv.select();
+                           return;
+                        }
+                     }
+                  }
+                  input.select();
+               });
+               td.appendChild(input);
+               tr.appendChild(td);
+            }
+            table.appendChild(tr);
+         }
+         let btn = document.createElement('button');
+         btn.innerHTML = 'COMPLETER';
+         btn.onclick = () => {
+            sudoku.resoudre();
+            for (let i = 0; i < 9; i++) {
+               for (let j = 0; j < 9; j++) {
+                  let val = sudoku.getElem(i, j);
+                  if (val !== 0) {
+                     let elem = document.getElementById(`${i}@${j}`);
+                     if (elem) {
+                        elem.value = val;
+                     }
+                  }
+                  
+               }
+            }
+         };
+         let main = document.querySelector('main');
+         main.appendChild(table);
+         main.appendChild(btn);
+      };
+   </script>
+</html>

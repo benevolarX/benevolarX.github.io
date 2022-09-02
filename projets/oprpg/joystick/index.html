@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="UTF-8"/>
+		<title>joystick</title>
+		<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, shrink-to-fit=no" />
+        <link media="all" rel="stylesheet" href="../assets/css/b-css.min.css" />
+        <link media="all" rel="stylesheet" href="../assets/css/classic.css" />
+		<script async src="../assets/js/html/virtual-joystick.js"></script>
+	</head>
+	<body>
+		<div class="full">
+			<div class="retour" >
+				<a href="../index.html" class="btn">retour</a>
+			</div>
+			<canvas id="jeu" width="1950" height="1080"></canvas>
+			<virtual-joystick class="stick" size-block='150' size-stick='90' color-stick='rgb(0, 118, 168)' color-stick-hover='rgb(0, 162, 232)' >
+			</virtual-joystick>
+		</div>
+		<script>
+			window.onload = () => {
+				let jeu = document.getElementById('jeu');
+				let stick = document.querySelector('virtual-joystick');
+				let cx = jeu.width / 2;
+				let cy = jeu.height / 2;
+				let draw = () => {
+					let ctx = jeu.getContext('2d');
+					ctx.clearRect(0, 0, jeu.width, jeu.height);
+					let xxx = stick.is_right ? 1 : (stick.is_left ? -1 : 0);
+					let yyy = stick.is_up ? -1 : (stick.is_down ? 1 : 0);
+					let norm = Math.sqrt(xxx ** 2 + yyy ** 2);
+					if (norm !== 0) {
+						xxx /= norm;
+						yyy /= norm;
+					}
+					cx += (xxx * 3);
+					cy += (yyy * 3);
+					ctx.beginPath(); 
+					ctx.fillStyle = "red";
+					ctx.lineWidth = 2;
+					ctx.arc(cx, cy, 30, 0, Math.PI*2, true); 
+					ctx.fill();
+					window.requestAnimationFrame(draw);
+				}
+				window.requestAnimationFrame(draw);
+			};
+		</script>
+	</body>
+</html>

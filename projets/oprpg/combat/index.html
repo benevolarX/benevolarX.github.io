@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang='fr'>
+  <head>
+    <meta charset="UTF-8"/>
+    <title>OPRPG::COMBAT</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, shrink-to-fit=no" />
+    <meta name="keywords" content="Onepiece-RPG, one piece, onepiece, rpg, mmo, mmorpg, v4, mobile" />
+    <meta name="description" content="Onepiece-RPG, jeu en ligne par navigateur sur le thème de one piece" />
+    <meta name="author" content="benevolar" />
+    <link media="screen" rel="stylesheet" href="../assets/css/reset.css" />
+    <link media="all" rel="stylesheet" href="../assets/css/classic.css" />
+    <link media="all" rel="stylesheet" href="./combat.css" />
+    <script defer src="./index.js" ></script>
+  </head>
+  <body>
+
+    <div class="retour" >
+      <a href="../index.html" class="btn">retour</a>
+      <button id="full-screen">full screen</button>
+    </div>
+	
+    <main id="main">
+
+      <div class="combat">
+
+        <canvas class="hidden" id="animation">techno canvas non supporté, change de navigateur</canvas>
+
+        <!-- ADVERSAIRES -->
+        <div class="camp adversaires" />
+          <div class="combattant">
+            <img class="clic cible" data-target="1" src="../assets/img/test/marigold.png"/> 
+            <br/><progress max="2500" value="2200"></progress>
+            <p>🗡️ 350 / 🛡️ 250</p>
+          </div>
+          <div class="combattant">
+            <img class="clic cible" data-target="2" src="../assets/img/test/sandersonia.png"/>
+            <br/><progress max="2500" value="2200"></progress>
+            <p>🗡️ 450 / 🛡️ 150</p>
+          </div>
+        </div>
+
+        <!-- COMPETENCES -->
+        <div class="competences">
+          <div class="competence-liste">
+            <label class="competence clic" for="atk-1">
+              <input type="radio" name="attaque" data-num="1" id="atk-1" />
+              <span>COUP DE POING</span>
+              <p>
+                🗡️ 15 <br/>
+                ✖️ 15%
+              </p>
+            </label>
+            <label class="competence clic" for="atk-2">
+              <input type="radio" name="attaque" data-num="2" id="atk-2" />
+              <span>COUP DE PIED</span>
+              <p>
+                🗡️ 20 <br/>
+                ✖️ 5%
+              </p>
+            </label>
+          </div>
+          <div class="competences-form">
+            <button class="btn-choix annuler-attaque">❌ annuler</button>
+            <button class="btn-choix valider-attaque" disabled>✔️ valider</button>
+          </div>
+        </div>
+
+        <!-- ALLIES -->
+        <div class="camp allies" />
+          <div class="combattant">
+            <img class="clic cible" data-target="3" src="../assets/img/test/luffy.png"/>
+            <br/><progress max="2000" value="1900"></progress>
+            <p>🗡️ 500 / 🛡️ 300</p>
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+    
+  </body>
+</html>
