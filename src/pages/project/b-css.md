@@ -1,5 +1,5 @@
 ---
-layout: ../../../layouts/project.astro
+layout: ../../layouts/project.astro
 title: b-css
 client: Self
 publishDate: 2018-09-09 00:00:00
@@ -14,6 +14,7 @@ tags:
   - framework
   - npm
 ---
+
 
 Il y a quelques année, j'ai découvert le framework [bulma](https://bulma.io/). 
 A l'époque, je ne connaissais pas grand chose du front. 

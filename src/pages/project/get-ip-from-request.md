@@ -1,5 +1,5 @@
 ---
-layout: ../../../layouts/project.astro
+layout: ../../layouts/project.astro
 title: get-ip-from-request
 client: Self
 publishDate: 2020-09-09 00:00:00
