@@ -4,7 +4,7 @@ import { defineConfig } from 'astro/config';
 import solid from '@astrojs/solid-js';
 
 export default defineConfig({
-	site: 'https://benevolarx.github.io',
+	//site: 'https://benevolarx.github.io',
 	// base: 'C:/Users/victor/Documents/perso/benevolar/dist',
 	integrations: [/*sitemap(),*/ solid()],
 	outDir: 'docs'
