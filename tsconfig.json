@@ -1,0 +1,33 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "include": [".astro/types.d.ts", "**/*"],
+  "exclude": ["dist", "docs"],
+  "compilerOptions": {
+    "rootDir": ".",
+    "target": "ESNext",
+    "module": "nodenext",
+    "lib": ["ESNext", "DOM"],
+    "moduleResolution": "nodenext",
+    "strict": true,
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "allowJs": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+	  "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "types": ["astro/client", "vite/client"],
+    "jsx": "preserve",
+    "jsxImportSource": "solid-js",
+    "paths": {
+      "@public/*": ["./public/*"],
+      "@components/*": ["./src/components/*"],
+      "@layouts/*": ["./src/layouts/*"],
+      "@pages/*": ["./src/pages/*"]
+    }
+  }
+}
